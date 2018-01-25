@@ -6,43 +6,42 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>635</width>
-    <height>300</height>
+    <width>656</width>
+    <height>648</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QHBoxLayout" name="horizontalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
-     <widget class="QLabel" name="participantLabel">
-      <property name="maximumSize">
-       <size>
-        <width>113</width>
-        <height>16777215</height>
-       </size>
+     <widget class="QStackedWidget" name="stackedWidget">
+      <property name="currentIndex">
+       <number>0</number>
       </property>
-      <property name="text">
-       <string>Participanti: 0</string>
-      </property>
+      <widget class="QWidget" name="page">
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QTableView" name="tablePersons"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="page_2">
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <item>
+         <widget class="QTableView" name="tableWorkingHours"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="page_3">
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <item>
+         <widget class="QTableView" name="tableWorkingHoursJoinPersons"/>
+        </item>
+       </layout>
+      </widget>
      </widget>
-    </item>
-    <item>
-     <widget class="QPushButton" name="addParticipant">
-      <property name="maximumSize">
-       <size>
-        <width>133</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="text">
-       <string>Add Participant</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <layout class="QVBoxLayout" name="verticalLayout"/>
     </item>
    </layout>
   </widget>
@@ -51,16 +50,34 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>635</width>
-     <height>19</height>
+     <width>656</width>
+     <height>22</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuKarate_Competition">
+   <widget class="QMenu" name="menuEdit">
     <property name="title">
-     <string>Karate Competition</string>
+     <string>Edit</string>
     </property>
+    <addaction name="actionAdd_Item"/>
+    <addaction name="actionAdd_Hours"/>
    </widget>
-   <addaction name="menuKarate_Competition"/>
+   <widget class="QMenu" name="menuDatabase">
+    <property name="title">
+     <string>Database</string>
+    </property>
+    <addaction name="actionRefresh"/>
+   </widget>
+   <widget class="QMenu" name="menuTables">
+    <property name="title">
+     <string>Tables</string>
+    </property>
+    <addaction name="actionTables"/>
+    <addaction name="actionWorking_Hours"/>
+    <addaction name="actionJoin_Table"/>
+   </widget>
+   <addaction name="menuEdit"/>
+   <addaction name="menuDatabase"/>
+   <addaction name="menuTables"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -71,6 +88,48 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionAdd_Item">
+   <property name="text">
+    <string>Add Person</string>
+   </property>
+  </action>
+  <action name="actionRefresh">
+   <property name="text">
+    <string>Refresh</string>
+   </property>
+  </action>
+  <action name="actionTables">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Persons</string>
+   </property>
+  </action>
+  <action name="actionWorking_Hours">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Working Hours</string>
+   </property>
+  </action>
+  <action name="actionAdd_Hours">
+   <property name="text">
+    <string>Add Hours</string>
+   </property>
+  </action>
+  <action name="actionJoin_Table">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Join Table</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

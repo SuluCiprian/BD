@@ -1,14 +1,14 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2017-12-27T14:07:02
+# Project created by QtCreator 2017-11-09T22:37:54
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = KarateCompetition
+TARGET = DBTests
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -26,12 +26,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    participant.cpp
+    additemdialog.cpp
 
 HEADERS += \
         mainwindow.h \
-    participant.h
+    additemdialog.h
 
 FORMS += \
         mainwindow.ui \
-    participant.ui
+    additemdialog.ui
