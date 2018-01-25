@@ -51,7 +51,7 @@
      <x>0</x>
      <y>0</y>
      <width>656</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuEdit">
@@ -59,7 +59,7 @@
      <string>Edit</string>
     </property>
     <addaction name="actionAdd_Item"/>
-    <addaction name="actionAdd_Hours"/>
+    <addaction name="actionAdd_Organization"/>
    </widget>
    <widget class="QMenu" name="menuDatabase">
     <property name="title">
@@ -117,9 +117,12 @@
     <string>Working Hours</string>
    </property>
   </action>
-  <action name="actionAdd_Hours">
+  <action name="actionAdd_Organization">
    <property name="text">
-    <string>Add Hours</string>
+    <string>Add Organization</string>
+   </property>
+   <property name="toolTip">
+    <string>Add Organization</string>
    </property>
   </action>
   <action name="actionJoin_Table">

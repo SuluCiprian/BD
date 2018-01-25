@@ -47,14 +47,38 @@
       <widget class="QLineEdit" name="id"/>
      </item>
      <item row="3" column="0">
-      <widget class="QLabel" name="labelHours">
+      <widget class="QLabel" name="labelAge">
        <property name="text">
-        <string>Hours:</string>
+        <string>Age</string>
        </property>
       </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QLineEdit" name="hours"/>
+      <widget class="QLineEdit" name="age">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QLineEdit" name="weight"/>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Weight</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>Experience</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QLineEdit" name="experience"/>
      </item>
     </layout>
    </item>

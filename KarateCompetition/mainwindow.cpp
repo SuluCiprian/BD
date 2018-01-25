@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_tableActions->addAction(ui->actionJoin_Table);
     connect(m_tableActions, &QActionGroup::triggered, this, &MainWindow::onTableActionsTriggered);
     connect(ui->actionAdd_Item, &QAction::triggered, this, &MainWindow::onAddItem);
-    connect(ui->actionAdd_Hours, &QAction::triggered, this, &MainWindow::onAddHours);
+    //connect(ui->actionAdd_Organization, &QAction::triggered, this, &MainWindow::onAddOrganization);
     m_addItemDialog = new AddItemDialog(this);
     QString hostName = "baasu.db.elephantsql.com";
     QString databaseName = "xuiqwkse";
@@ -77,10 +77,30 @@ void MainWindow::onAddItem()
         QString firstName;
         QString lastName;
         QString id;
-        m_addItemDialog->data(firstName, lastName, id);
-        insertQuery(id, firstName, lastName);
+        QString age;
+        QString weight;
+        QString experience;
+        m_addItemDialog->data(firstName, lastName, id, age, weight, experience);
+        insertQuery(id, firstName, lastName, age, weight, experience);
     }
 }
+// adauga organizatie
+//void MainWindow::onAddOrganization()
+//{
+//    m_addItemDialog->setType(AddItemDialog::AddType::ADD_PERSON);
+//    int r = m_addItemDialog->exec();
+//    if(r == QDialog::Accepted)
+//    {
+//        QString firstName;
+//        QString lastName;
+//        QString id;
+//        QString age;
+//        QString weight;
+//        QString experience;
+//        m_addItemDialog->data(firstName, lastName, id, age, weight, experience);
+//        insertQuery(id, firstName, lastName, age, weight, experience);
+//    }
+//}
 
 void MainWindow::onRefreshDB()
 {
@@ -92,7 +112,7 @@ void MainWindow::setupModel()
     ui->tablePersons->setSelectionMode(QAbstractItemView::SingleSelection);
     m_personsModel = new QSqlTableModel(this, m_db);
     m_personsModel->setTable("Participanti");
-//    m_model->setEditStrategy(QSqlTableModel::OnFieldChange);
+//  m_model->setEditStrategy(QSqlTableModel::OnFieldChange);
     m_personsModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
 
     m_personsModel->setHeaderData(0, Qt::Horizontal, tr("Id"));
@@ -118,18 +138,28 @@ void MainWindow::setupModel()
     m_workingHoursJoinPersonsModel->setHeaderData(3, Qt::Horizontal, tr("Hours"));
 }
 
-void MainWindow::insertQuery(const QString &id, const QString &firstName, const QString &lastName)
+void MainWindow::insertQuery(const QString &id, const QString &firstName, const QString &lastName,
+                             const QString &age, const QString &weight, const QString &experience)
 {
     QSqlField idField("participant_id", QVariant::Int);
     QSqlField firstNameField("first_name", QVariant::String);
     QSqlField lastNameField("last_name", QVariant::String);
+    QSqlField ageField("age", QVariant::Int);
+    QSqlField weightField("weight", QVariant::Int);
+    QSqlField experienceField("experience", QVariant::String);
     idField.setValue(id);
     firstNameField.setValue(firstName);
     lastNameField.setValue(lastName);
+    ageField.setValue(age);
+    weightField.setValue(weight);
+    experienceField.setValue(experience);
     QSqlRecord record;
     record.append(idField);
     record.append(firstNameField);
     record.append(lastNameField);
+    record.append(ageField);
+    record.append(weightField);
+    record.append(experienceField);
     m_personsModel->insertRecord(-1, record);
     if(!m_personsModel->submitAll())
     {
@@ -203,15 +233,18 @@ void MainWindow::onAddHours()
     QString id = m_personsModel->itemData(index.sibling(row, 0))[Qt::EditRole].toString();
     QString firstName = m_personsModel->itemData(index.sibling(row, 1))[Qt::EditRole].toString();
     QString lastName = m_personsModel->itemData(index.sibling(row, 2))[Qt::EditRole].toString();
+    QString age = m_personsModel->itemData(index.sibling(row, 3))[Qt::EditRole].toString();
+    QString weight = m_personsModel->itemData(index.sibling(row, 4))[Qt::EditRole].toString();
+    QString experience = m_personsModel->itemData(index.sibling(row, 5))[Qt::EditRole].toString();
 
     m_addItemDialog->setType(AddItemDialog::AddType::ADD_HOURS);
-    m_addItemDialog->setData(firstName, lastName, id);
+    m_addItemDialog->setData(firstName, lastName, id, age, weight, experience);
     int r = m_addItemDialog->exec();
     if(r == QDialog::Rejected)
     {
         return;
     }
-    QString hours;
-    m_addItemDialog->hours(hours);
-    insertQuery(id, hours);
+//    QString hours;
+//    m_addItemDialog->hours(hours);
+//    insertQuery(id, hours);
 }

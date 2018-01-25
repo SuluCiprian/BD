@@ -32,7 +32,8 @@ private slots:
 
 private:
     void setupModel();
-    void insertQuery(const QString &id, const QString &firstName, const QString &lastName);
+    void insertQuery(const QString &id, const QString &firstName, const QString &lastName,
+                     const QString &age, const QString &weight, const QString &experience);
     void insertQuery(const QString &id, const QString &hours);
     void selectQuery();
     void readSettings(QString &hostName, QString &databaseName, QString &userName, QString &password);
