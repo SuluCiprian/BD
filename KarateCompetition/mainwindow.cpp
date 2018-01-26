@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "additemdialog.h"
 #include "addorganization.h"
+#include "addchampionship.h"
 
 #include <QSqlQuery>
 #include <QSqlError>
@@ -19,17 +20,20 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     m_tableActions = new QActionGroup(this);
     m_tableActions->addAction(ui->actionTables);
-    m_tableActions->addAction(ui->actionWorking_Hours);
+    m_tableActions->addAction(ui->actionOrganizations);
+    m_tableActions->addAction(ui->actionChampionship);
     m_tableActions->addAction(ui->actionJoin_Table);
     connect(m_tableActions, &QActionGroup::triggered, this, &MainWindow::onTableActionsTriggered);
     connect(ui->actionAdd_Item, &QAction::triggered, this, &MainWindow::onAddItem);
     connect(ui->actionAdd_Organization, &QAction::triggered, this, &MainWindow::onAddOrganization);
+    connect(ui->actionAdd_Championship, &QAction::triggered, this, &MainWindow::onAddChampionship);
     m_addItemDialog = new AddItemDialog(this);
     m_addOrganization = new AddOrganization(this);
-    QString hostName = "horton.elephantsql.com";
-    QString databaseName = "vefisijm";
-    QString userName = "vefisijm";
-    QString password = "9FBCK4VnPwUt2T8sXOkSigfd4XQTGZO-";
+    m_addChampionship = new AddChampionship(this);
+    QString hostName = "baasu.db.elephantsql.com";
+    QString databaseName = "xuiqwkse";
+    QString userName = "xuiqwkse";
+    QString password = "Ikc7qWDsaBB3S_4n78YUJsfKWBu99VFn";
     readSettings(hostName, databaseName, userName, password);
     m_db = QSqlDatabase::addDatabase("QPSQL");
     m_db.setHostName(hostName);
@@ -48,8 +52,9 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->statusBar->showMessage(tr("Database connected!"));
     }
     setupModel();
-    ui->tablePersons->setModel(m_personsModel);\
+    ui->tablePersons->setModel(m_personsModel);
     ui->tableOrganization->setModel(m_organizationModel);
+    ui->tableChampionship->setModel(m_championshipModel);
     ui->tableWorkingHours->setModel(m_workingHoursModel);
     ui->tableWorkingHoursJoinPersons->setModel(m_workingHoursJoinPersonsModel);
     connect(ui->actionRefresh, &QAction::triggered, this, &MainWindow::onRefreshDB);
@@ -102,6 +107,28 @@ void MainWindow::onAddOrganization()
     }
 }
 
+void MainWindow::onAddChampionship()
+{
+    m_addChampionship->setType(AddChampionship::AddType::ADD_PERSON);
+    int r = m_addChampionship->exec();
+    if(r == QDialog::Accepted)
+    {
+        QString name;
+        QString location;
+        QString championship_id;
+        QString qualification_score;
+        QString quater_finals_score;
+        QString semifinals_score;
+        QString finale_score;
+        m_addChampionship->data(name,  location,  championship_id,
+                                qualification_score, quater_finals_score,
+                                semifinals_score, finale_score);
+        insertQuery(name,  location,  championship_id,
+                    qualification_score, quater_finals_score,
+                    semifinals_score, finale_score);
+    }
+}
+
 void MainWindow::onRefreshDB()
 {
     selectQuery();
@@ -109,27 +136,43 @@ void MainWindow::onRefreshDB()
 
 void MainWindow::setupModel()
 {
+    // Adauga Participanti
     ui->tablePersons->setSelectionMode(QAbstractItemView::SingleSelection);
     m_personsModel = new QSqlTableModel(this, m_db);
     m_personsModel->setTable("Participanti");
 //  m_model->setEditStrategy(QSqlTableModel::OnFieldChange);
     m_personsModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
-
     m_personsModel->setHeaderData(0, Qt::Horizontal, tr("Id"));
     m_personsModel->setHeaderData(1, Qt::Horizontal, tr("First Name"));
     m_personsModel->setHeaderData(2, Qt::Horizontal, tr("Last Name"));
     m_personsModel->select();
 
+
+    // Adauga oraganizatii
     ui->tableOrganization->setSelectionMode(QAbstractItemView::SingleSelection);
     m_organizationModel = new QSqlTableModel(this, m_db);
     m_organizationModel->setTable("organization");
 //  m_model->setEditStrategy(QSqlTableModel::OnFieldChange);
     m_organizationModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
-
     m_organizationModel->setHeaderData(0, Qt::Horizontal, tr("Id"));
     m_organizationModel->setHeaderData(1, Qt::Horizontal, tr("Name"));
     m_organizationModel->setHeaderData(2, Qt::Horizontal, tr("Info"));
     m_organizationModel->select();
+
+    // Adauga campionat
+    ui->tableChampionship->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_championshipModel = new QSqlTableModel(this, m_db);
+    m_championshipModel->setTable("championship");
+//  m_model->setEditStrategy(QSqlTableModel::OnFieldChange);
+    m_championshipModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    m_championshipModel->setHeaderData(0, Qt::Horizontal, tr("Id"));
+    m_championshipModel->setHeaderData(1, Qt::Horizontal, tr("Name"));
+    m_championshipModel->setHeaderData(2, Qt::Horizontal, tr("Location"));
+    m_championshipModel->setHeaderData(3, Qt::Horizontal, tr("Qualificuation Score"));
+    m_championshipModel->setHeaderData(4, Qt::Horizontal, tr("Quaterfinal Score"));
+    m_championshipModel->setHeaderData(5, Qt::Horizontal, tr("Semifinal Score"));
+    m_championshipModel->setHeaderData(6, Qt::Horizontal, tr("Final Score"));
+    m_championshipModel->select();
 
     m_workingHoursModel = new QSqlRelationalTableModel(this, m_db);
     m_workingHoursModel->setTable("WorkingHours");
@@ -205,6 +248,43 @@ void MainWindow::insertQuery(const QString &name, const QString &info, const QSt
     }
 }
 
+void MainWindow::insertQuery(const QString &name, const QString &location, const QString &championship_id,
+                             const QString &qualification_score, const QString &quater_finals_score,
+                             const QString &semifinals_score, const QString &finale_score)
+{
+    QSqlField idField("championship_id", QVariant::Int);
+    QSqlField nameField("name", QVariant::String);
+    QSqlField locationField("location", QVariant::String);
+    QSqlField qualificationScoreField("qualification_score", QVariant::Int);
+    QSqlField quaterfinalsScoreField("quater_finals_score", QVariant::Int);
+    QSqlField semifinalsScoreField("semifinals_score", QVariant::Int);
+    QSqlField finaleScoreField("finale_score", QVariant::Int);
+    idField.setValue(championship_id);
+    nameField.setValue(name);
+    locationField.setValue(location);
+    qualificationScoreField.setValue(qualification_score);
+    quaterfinalsScoreField.setValue(quater_finals_score);
+    semifinalsScoreField.setValue(semifinals_score);
+    finaleScoreField.setValue(finale_score);
+    QSqlRecord record;
+    record.append(idField);
+    record.append(nameField);
+    record.append(locationField);
+    record.append(qualificationScoreField);
+    record.append(quaterfinalsScoreField);
+    record.append(semifinalsScoreField);
+    record.append(finaleScoreField);
+    m_championshipModel->insertRecord(-1, record);
+    if(!m_championshipModel->submitAll())
+    {
+        ui->statusBar->showMessage(tr("Values not submitted to remote database!"));
+    }
+    else
+    {
+        ui->statusBar->showMessage(tr("Values submitted to remote database."));
+    }
+}
+
 void MainWindow::insertQuery(const QString &id, const QString &hours)
 {
     QSqlField idField("id", QVariant::Int);
@@ -241,16 +321,24 @@ void MainWindow::onTableActionsTriggered(QAction *action)
         //ui->stackedWidget->setCurrentWidget(ui->tablePersons);
         ui->stackedWidget->setCurrentIndex(0);
     }
-    if(action == ui->actionWorking_Hours)
+    if(action == ui->actionOrganizations)
     {
         //ui->stackedWidget->setCurrentWidget(ui->tableWorkingHours);
         ui->stackedWidget->setCurrentIndex(1);
-        ui->tablePersons->selectionModel()->clearSelection();
+        ui->tableOrganization->selectionModel()->clearSelection();
     }
+
     if(action == ui->actionJoin_Table)
     {
         ui->stackedWidget->setCurrentIndex(2);
         ui->tablePersons->selectionModel()->clearSelection();
+    }
+
+    if(action == ui->actionChampionship)
+    {
+        //ui->stackedWidget->setCurrentWidget(ui->tableWorkingHours);
+        ui->stackedWidget->setCurrentIndex(3);
+        ui->tableChampionship->selectionModel()->clearSelection();
     }
 }
 

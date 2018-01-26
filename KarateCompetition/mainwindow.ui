@@ -14,11 +14,11 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QHBoxLayout" name="horizontalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout_5">
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="page">
        <layout class="QVBoxLayout" name="verticalLayout">
@@ -38,6 +38,13 @@
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
          <widget class="QTableView" name="tableWorkingHours"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="page_5">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QTableView" name="tableChampionship"/>
         </item>
        </layout>
       </widget>
@@ -67,6 +74,7 @@
     </property>
     <addaction name="actionAdd_Item"/>
     <addaction name="actionAdd_Organization"/>
+    <addaction name="actionAdd_Championship"/>
    </widget>
    <widget class="QMenu" name="menuDatabase">
     <property name="title">
@@ -79,8 +87,9 @@
      <string>Tables</string>
     </property>
     <addaction name="actionTables"/>
-    <addaction name="actionWorking_Hours"/>
+    <addaction name="actionOrganizations"/>
     <addaction name="actionJoin_Table"/>
+    <addaction name="actionChampionship"/>
    </widget>
    <addaction name="menuEdit"/>
    <addaction name="menuDatabase"/>
@@ -113,15 +122,15 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Persons</string>
+    <string>Participants</string>
    </property>
   </action>
-  <action name="actionWorking_Hours">
+  <action name="actionOrganizations">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Working Hours</string>
+    <string>Orgsnization</string>
    </property>
   </action>
   <action name="actionAdd_Organization">
@@ -138,6 +147,22 @@
    </property>
    <property name="text">
     <string>Join Table</string>
+   </property>
+  </action>
+  <action name="actionChampionship">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Championship</string>
+   </property>
+  </action>
+  <action name="actionAdd_Championship">
+   <property name="text">
+    <string>Add Championship</string>
+   </property>
+   <property name="toolTip">
+    <string>Add Championship</string>
    </property>
   </action>
  </widget>

@@ -16,6 +16,7 @@ class MainWindow;
 class AddItemDialog;
 class QActionGroup;
 class AddOrganization;
+class AddChampionship;
 
 class MainWindow : public QMainWindow
 {
@@ -28,6 +29,7 @@ public:
 private slots:
     void onAddItem();
     void onAddOrganization();
+    void onAddChampionship();
     void onRefreshDB();
     void onTableActionsTriggered(QAction *action);
     void onAddHours();
@@ -38,6 +40,9 @@ private:
                      const QString &age, const QString &weight, const QString &experience);
     void insertQuery(const QString &id, const QString &hours);
      void insertQuery(const QString &name, const QString &info, const QString &organization_id);
+     void insertQuery(const QString &name, const QString &location, const QString &championship_id,
+                                  const QString &qualification_score, const QString &quater_finals_score,
+                                  const QString &semifinals_score, const QString &finale_score);
     void selectQuery();
     void readSettings(QString &hostName, QString &databaseName, QString &userName, QString &password);
 
@@ -46,8 +51,10 @@ private:
     QActionGroup *m_tableActions;
     AddItemDialog *m_addItemDialog;
     AddOrganization *m_addOrganization;
+    AddChampionship *m_addChampionship;
     QSqlTableModel *m_personsModel;
     QSqlTableModel *m_organizationModel;
+    QSqlTableModel *m_championshipModel;
     QSqlRelationalTableModel *m_workingHoursModel;
     QSqlQueryModel *m_workingHoursJoinPersonsModel;
     QSqlDatabase m_db;
