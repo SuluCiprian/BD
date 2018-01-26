@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "additemdialog.h"
+#include "addorganization.h"
 
 #include <QSqlQuery>
 #include <QSqlError>
@@ -22,8 +23,9 @@ MainWindow::MainWindow(QWidget *parent) :
     m_tableActions->addAction(ui->actionJoin_Table);
     connect(m_tableActions, &QActionGroup::triggered, this, &MainWindow::onTableActionsTriggered);
     connect(ui->actionAdd_Item, &QAction::triggered, this, &MainWindow::onAddItem);
-    //connect(ui->actionAdd_Organization, &QAction::triggered, this, &MainWindow::onAddOrganization);
+    connect(ui->actionAdd_Organization, &QAction::triggered, this, &MainWindow::onAddOrganization);
     m_addItemDialog = new AddItemDialog(this);
+    m_addOrganization = new AddOrganization(this);
     QString hostName = "baasu.db.elephantsql.com";
     QString databaseName = "xuiqwkse";
     QString userName = "xuiqwkse";
@@ -46,7 +48,8 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->statusBar->showMessage(tr("Database connected!"));
     }
     setupModel();
-    ui->tablePersons->setModel(m_personsModel);
+    ui->tablePersons->setModel(m_personsModel);\
+    ui->tableOrganization->setModel(m_organizationModel);
     ui->tableWorkingHours->setModel(m_workingHoursModel);
     ui->tableWorkingHoursJoinPersons->setModel(m_workingHoursJoinPersonsModel);
     connect(ui->actionRefresh, &QAction::triggered, this, &MainWindow::onRefreshDB);
@@ -84,23 +87,20 @@ void MainWindow::onAddItem()
         insertQuery(id, firstName, lastName, age, weight, experience);
     }
 }
-// adauga organizatie
-//void MainWindow::onAddOrganization()
-//{
-//    m_addItemDialog->setType(AddItemDialog::AddType::ADD_PERSON);
-//    int r = m_addItemDialog->exec();
-//    if(r == QDialog::Accepted)
-//    {
-//        QString firstName;
-//        QString lastName;
-//        QString id;
-//        QString age;
-//        QString weight;
-//        QString experience;
-//        m_addItemDialog->data(firstName, lastName, id, age, weight, experience);
-//        insertQuery(id, firstName, lastName, age, weight, experience);
-//    }
-//}
+
+void MainWindow::onAddOrganization()
+{
+    m_addOrganization->setType(AddOrganization::AddType::ADD_PERSON);
+    int r = m_addOrganization->exec();
+    if(r == QDialog::Accepted)
+    {
+        QString name;
+        QString info;
+        QString organization_id;
+        m_addOrganization->data(name, info, organization_id);
+        insertQuery(name, info, organization_id);
+    }
+}
 
 void MainWindow::onRefreshDB()
 {
@@ -119,6 +119,17 @@ void MainWindow::setupModel()
     m_personsModel->setHeaderData(1, Qt::Horizontal, tr("First Name"));
     m_personsModel->setHeaderData(2, Qt::Horizontal, tr("Last Name"));
     m_personsModel->select();
+
+    ui->tableOrganization->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_organizationModel = new QSqlTableModel(this, m_db);
+    m_organizationModel->setTable("organization");
+//  m_model->setEditStrategy(QSqlTableModel::OnFieldChange);
+    m_organizationModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+
+    m_organizationModel->setHeaderData(0, Qt::Horizontal, tr("Id"));
+    m_organizationModel->setHeaderData(1, Qt::Horizontal, tr("Name"));
+    m_organizationModel->setHeaderData(2, Qt::Horizontal, tr("Info"));
+    m_organizationModel->select();
 
     m_workingHoursModel = new QSqlRelationalTableModel(this, m_db);
     m_workingHoursModel->setTable("WorkingHours");
@@ -162,6 +173,29 @@ void MainWindow::insertQuery(const QString &id, const QString &firstName, const 
     record.append(experienceField);
     m_personsModel->insertRecord(-1, record);
     if(!m_personsModel->submitAll())
+    {
+        ui->statusBar->showMessage(tr("Values not submitted to remote database!"));
+    }
+    else
+    {
+        ui->statusBar->showMessage(tr("Values submitted to remote database."));
+    }
+}
+
+void MainWindow::insertQuery(const QString &name, const QString &info, const QString &organization_id)
+{
+    QSqlField idField("organization_id", QVariant::Int);
+    QSqlField nameField("name", QVariant::String);
+    QSqlField infoField("info", QVariant::String);
+    idField.setValue(organization_id);
+    nameField.setValue(name);
+    infoField.setValue(info);
+    QSqlRecord record;
+    record.append(idField);
+    record.append(nameField);
+    record.append(infoField);
+    m_organizationModel->insertRecord(-1, record);
+    if(!m_organizationModel->submitAll())
     {
         ui->statusBar->showMessage(tr("Values not submitted to remote database!"));
     }

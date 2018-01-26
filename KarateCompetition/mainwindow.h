@@ -15,6 +15,7 @@ class MainWindow;
 }
 class AddItemDialog;
 class QActionGroup;
+class AddOrganization;
 
 class MainWindow : public QMainWindow
 {
@@ -26,6 +27,7 @@ public:
 
 private slots:
     void onAddItem();
+    void onAddOrganization();
     void onRefreshDB();
     void onTableActionsTriggered(QAction *action);
     void onAddHours();
@@ -35,6 +37,7 @@ private:
     void insertQuery(const QString &id, const QString &firstName, const QString &lastName,
                      const QString &age, const QString &weight, const QString &experience);
     void insertQuery(const QString &id, const QString &hours);
+     void insertQuery(const QString &name, const QString &info, const QString &organization_id);
     void selectQuery();
     void readSettings(QString &hostName, QString &databaseName, QString &userName, QString &password);
 
@@ -42,7 +45,9 @@ private:
     Ui::MainWindow *ui;
     QActionGroup *m_tableActions;
     AddItemDialog *m_addItemDialog;
+    AddOrganization *m_addOrganization;
     QSqlTableModel *m_personsModel;
+    QSqlTableModel *m_organizationModel;
     QSqlRelationalTableModel *m_workingHoursModel;
     QSqlQueryModel *m_workingHoursJoinPersonsModel;
     QSqlDatabase m_db;

@@ -26,7 +26,7 @@ public:
                  const QString &age, const QString &weight, const QString &experience);
     void data(QString &firstName, QString &lastName, QString &id,
                QString &age,  QString &weight,  QString &experience);
-    void data(QString &name, QString &info, QString &id);
+   // void data(QString &name, QString &info, QString &id);
     void setType(AddType type);
     //void setHours(const QString &hours);
    // void hours(QString &hours);
