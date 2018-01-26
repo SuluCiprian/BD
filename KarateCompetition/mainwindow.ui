@@ -14,11 +14,11 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QVBoxLayout" name="verticalLayout_5">
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>3</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="page">
        <layout class="QVBoxLayout" name="verticalLayout">
@@ -31,6 +31,13 @@
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <widget class="QTableView" name="tableOrganization"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="page_6">
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <item>
+         <widget class="QTableView" name="tableAge"/>
         </item>
        </layout>
       </widget>
@@ -75,6 +82,9 @@
     <addaction name="actionAdd_Item"/>
     <addaction name="actionAdd_Organization"/>
     <addaction name="actionAdd_Championship"/>
+    <addaction name="actionAdd_Age_Category"/>
+    <addaction name="actionAdd_Weight_Category"/>
+    <addaction name="actionAdd_Experience_Category"/>
    </widget>
    <widget class="QMenu" name="menuDatabase">
     <property name="title">
@@ -90,6 +100,9 @@
     <addaction name="actionOrganizations"/>
     <addaction name="actionJoin_Table"/>
     <addaction name="actionChampionship"/>
+    <addaction name="actionAge"/>
+    <addaction name="actionWeight"/>
+    <addaction name="actionExperience"/>
    </widget>
    <addaction name="menuEdit"/>
    <addaction name="menuDatabase"/>
@@ -163,6 +176,39 @@
    </property>
    <property name="toolTip">
     <string>Add Championship</string>
+   </property>
+  </action>
+  <action name="actionAdd_Age_Category">
+   <property name="text">
+    <string>Add Age Category</string>
+   </property>
+  </action>
+  <action name="actionAdd_Weight_Category">
+   <property name="text">
+    <string>Add Weight Category</string>
+   </property>
+  </action>
+  <action name="actionAdd_Experience_Category">
+   <property name="text">
+    <string>Add Experience Category</string>
+   </property>
+  </action>
+  <action name="actionAge">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Age</string>
+   </property>
+  </action>
+  <action name="actionWeight">
+   <property name="text">
+    <string>Weight</string>
+   </property>
+  </action>
+  <action name="actionExperience">
+   <property name="text">
+    <string>Experience</string>
    </property>
   </action>
  </widget>

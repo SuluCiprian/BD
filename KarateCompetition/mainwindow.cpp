@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "additemdialog.h"
 #include "addorganization.h"
+#include "addagecategory.h"
 #include "addchampionship.h"
 
 #include <QSqlQuery>
@@ -22,13 +23,16 @@ MainWindow::MainWindow(QWidget *parent) :
     m_tableActions->addAction(ui->actionTables);
     m_tableActions->addAction(ui->actionOrganizations);
     m_tableActions->addAction(ui->actionChampionship);
+    m_tableActions->addAction(ui->actionAge);
     m_tableActions->addAction(ui->actionJoin_Table);
     connect(m_tableActions, &QActionGroup::triggered, this, &MainWindow::onTableActionsTriggered);
     connect(ui->actionAdd_Item, &QAction::triggered, this, &MainWindow::onAddItem);
     connect(ui->actionAdd_Organization, &QAction::triggered, this, &MainWindow::onAddOrganization);
     connect(ui->actionAdd_Championship, &QAction::triggered, this, &MainWindow::onAddChampionship);
+    connect(ui->actionAdd_Age_Category, &QAction::triggered, this, &MainWindow::onAddAgeCategory);
     m_addItemDialog = new AddItemDialog(this);
     m_addOrganization = new AddOrganization(this);
+    m_addAgeCategory = new AddAgeCategory(this);
     m_addChampionship = new AddChampionship(this);
     QString hostName = "baasu.db.elephantsql.com";
     QString databaseName = "xuiqwkse";
@@ -55,6 +59,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tablePersons->setModel(m_personsModel);
     ui->tableOrganization->setModel(m_organizationModel);
     ui->tableChampionship->setModel(m_championshipModel);
+    ui->tableAge->setModel(m_ageModel);
     ui->tableWorkingHours->setModel(m_workingHoursModel);
     ui->tableWorkingHoursJoinPersons->setModel(m_workingHoursJoinPersonsModel);
     connect(ui->actionRefresh, &QAction::triggered, this, &MainWindow::onRefreshDB);
@@ -104,6 +109,19 @@ void MainWindow::onAddOrganization()
         QString organization_id;
         m_addOrganization->data(name, info, organization_id);
         insertQuery(name, info, organization_id);
+    }
+}
+void MainWindow::onAddAgeCategory()
+{
+    m_addAgeCategory->setType(AddAgeCategory::AddType::ADD_PERSON);
+    int r = m_addAgeCategory->exec();
+    if(r == QDialog::Accepted)
+    {
+        QString minAge;
+        QString maxAge;
+        QString age_id;
+        m_addAgeCategory->data(minAge, maxAge, age_id);
+        insertQuery1(minAge, maxAge, age_id);
     }
 }
 
@@ -158,6 +176,17 @@ void MainWindow::setupModel()
     m_organizationModel->setHeaderData(1, Qt::Horizontal, tr("Name"));
     m_organizationModel->setHeaderData(2, Qt::Horizontal, tr("Info"));
     m_organizationModel->select();
+
+    // Adauga categorii varsta
+    ui->tableAge->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_ageModel = new QSqlTableModel(this, m_db);
+    m_ageModel->setTable("age");
+//  m_model->setEditStrategy(QSqlTableModel::OnFieldChange);
+    m_ageModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    m_ageModel->setHeaderData(0, Qt::Horizontal, tr("Min Age"));
+    m_ageModel->setHeaderData(1, Qt::Horizontal, tr("Max Age"));
+    m_ageModel->setHeaderData(2, Qt::Horizontal, tr("Age Id"));
+    m_ageModel->select();
 
     // Adauga campionat
     ui->tableChampionship->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -239,6 +268,29 @@ void MainWindow::insertQuery(const QString &name, const QString &info, const QSt
     record.append(infoField);
     m_organizationModel->insertRecord(-1, record);
     if(!m_organizationModel->submitAll())
+    {
+        ui->statusBar->showMessage(tr("Values not submitted to remote database!"));
+    }
+    else
+    {
+        ui->statusBar->showMessage(tr("Values submitted to remote database."));
+    }
+}
+
+void MainWindow::insertQuery1(const QString &minAge, const QString &maxAge, const QString &age_id)
+{
+    QSqlField idField("age_id", QVariant::Int);
+    QSqlField minAgeField("min_bound", QVariant::Int);
+    QSqlField maxAgeField("max_bound", QVariant::Int);
+    idField.setValue(age_id);
+    minAgeField.setValue(minAge);
+    maxAgeField.setValue(maxAge);
+    QSqlRecord record;
+    record.append(idField);
+    record.append(minAgeField);
+    record.append(maxAgeField);
+    m_ageModel->insertRecord(-1, record);
+    if(!m_ageModel->submitAll())
     {
         ui->statusBar->showMessage(tr("Values not submitted to remote database!"));
     }
@@ -330,15 +382,21 @@ void MainWindow::onTableActionsTriggered(QAction *action)
 
     if(action == ui->actionJoin_Table)
     {
-        ui->stackedWidget->setCurrentIndex(2);
+        ui->stackedWidget->setCurrentIndex(5);
         ui->tablePersons->selectionModel()->clearSelection();
     }
 
     if(action == ui->actionChampionship)
     {
         //ui->stackedWidget->setCurrentWidget(ui->tableWorkingHours);
-        ui->stackedWidget->setCurrentIndex(3);
+        ui->stackedWidget->setCurrentIndex(4);
         ui->tableChampionship->selectionModel()->clearSelection();
+    }
+    if(action == ui->actionAge)
+    {
+        //ui->stackedWidget->setCurrentWidget(ui->tableWorkingHours);
+        ui->stackedWidget->setCurrentIndex(2);
+        ui->tableAge->selectionModel()->clearSelection();
     }
 }
 

@@ -28,16 +28,19 @@ SOURCES += \
         mainwindow.cpp \
     additemdialog.cpp \
     addorganization.cpp \
-    addchampionship.cpp
+    addchampionship.cpp \
+    addagecategory.cpp
 
 HEADERS += \
         mainwindow.h \
     additemdialog.h \
     addorganization.h \
-    addchampionship.h
+    addchampionship.h \
+    addagecategory.h
 
 FORMS += \
         mainwindow.ui \
     additemdialog.ui \
     addorganization.ui \
-    addchampionship.ui
+    addchampionship.ui \
+    addagecategory.ui
