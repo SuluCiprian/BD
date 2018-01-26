@@ -26,10 +26,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionAdd_Organization, &QAction::triggered, this, &MainWindow::onAddOrganization);
     m_addItemDialog = new AddItemDialog(this);
     m_addOrganization = new AddOrganization(this);
-    QString hostName = "baasu.db.elephantsql.com";
-    QString databaseName = "xuiqwkse";
-    QString userName = "xuiqwkse";
-    QString password = "Ikc7qWDsaBB3S_4n78YUJsfKWBu99VFn";
+    QString hostName = "horton.elephantsql.com";
+    QString databaseName = "vefisijm";
+    QString userName = "vefisijm";
+    QString password = "9FBCK4VnPwUt2T8sXOkSigfd4XQTGZO-";
     readSettings(hostName, databaseName, userName, password);
     m_db = QSqlDatabase::addDatabase("QPSQL");
     m_db.setHostName(hostName);

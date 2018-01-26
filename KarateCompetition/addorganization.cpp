@@ -35,7 +35,7 @@ void AddOrganization::accept()
 
     if(m_type == AddType::ADD_PERSON)
     {
-        ui->id->text().toInt(&ok);
+        ui->organization_id->text().toInt(&ok);
         if(!ok)
         {
             QMessageBox::warning(this, tr("Add Item Error"), tr("Id should be a number"));
