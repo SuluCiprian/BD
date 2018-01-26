@@ -18,6 +18,7 @@ class QActionGroup;
 class AddOrganization;
 class AddChampionship;
 class AddAgeCategory;
+class AddWeightCategory;
 
 class MainWindow : public QMainWindow
 {
@@ -31,6 +32,7 @@ private slots:
     void onAddItem();
     void onAddOrganization();
     void onAddAgeCategory();
+    void onAddWeightCategory();
     void onAddChampionship();
     void onRefreshDB();
 
@@ -44,6 +46,7 @@ private:
                      const QString &age, const QString &weight, const QString &experience);
     void insertQuery(const QString &id, const QString &hours);
     void insertQuery1(const QString &minAge, const QString &maxAge, const QString &age_id);
+    void insertQuery2(const QString &min_bound, const QString &max_bound, const QString &weight_id);
      void insertQuery(const QString &name, const QString &info, const QString &organization_id);
      void insertQuery(const QString &name, const QString &location, const QString &championship_id,
                                   const QString &qualification_score, const QString &quater_finals_score,
@@ -58,8 +61,10 @@ private:
     AddOrganization *m_addOrganization;
     AddChampionship *m_addChampionship;
     AddAgeCategory *m_addAgeCategory;
+    AddWeightCategory *m_addWeightCategory;
     QSqlTableModel *m_personsModel;
     QSqlTableModel *m_ageModel;
+    QSqlTableModel *m_weightModel;
     QSqlTableModel *m_organizationModel;
     QSqlTableModel *m_championshipModel;
     QSqlRelationalTableModel *m_workingHoursModel;
