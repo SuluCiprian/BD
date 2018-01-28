@@ -35,10 +35,10 @@ private slots:
     void onAddWeightCategory();
     void onAddChampionship();
     void onRefreshDB();
+    void onNextRound();
     int calculateWeightId(int weight);
     int calculateAgeId(int age);
     void onTableActionsTriggered(QAction *action);
-    void onAddHours();
 
 
 private:
@@ -46,7 +46,7 @@ private:
     void insertQuery(const QString &id, const QString &firstName, const QString &lastName,
                      const QString &age, const QString &weight, const QString &experience,
                       const QString &organization_id, const QString &championship_id);
-    void insertQuery(const QString &id, const QString &hours);
+   // void insertQuery(const QString &id, const QString &hours);
     void insertQuery1(const QString &minAge, const QString &maxAge, const QString &age_id);
     void insertQuery2(const QString &min_bound, const QString &max_bound, const QString &weight_id);
      void insertQuery(const QString &name, const QString &info, const QString &organization_id);
@@ -69,8 +69,8 @@ private:
     QSqlTableModel *m_weightModel;
     QSqlTableModel *m_organizationModel;
     QSqlTableModel *m_championshipModel;
-    QSqlRelationalTableModel *m_workingHoursModel;
-    QSqlQueryModel *m_workingHoursJoinPersonsModel;
+    QSqlRelationalTableModel *m_simModel;
+    QSqlQueryModel *m_participantJoinChampModel;
     QSqlDatabase m_db;
 
 };

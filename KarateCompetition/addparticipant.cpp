@@ -107,6 +107,8 @@ void AddParticipant::showEvent(QShowEvent *)
         ui->age->setEnabled(false);
         ui->weight->setEnabled(false);
         ui->experience->setEnabled(false);
+        ui->organization_id->setEnabled(false);
+        ui->championship_id->setEnabled(false);
 //        ui->hours->setVisible(true);
 //        ui->labelHours->setVisible(true);
     }

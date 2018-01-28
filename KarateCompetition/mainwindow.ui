@@ -18,7 +18,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>5</number>
       </property>
       <widget class="QWidget" name="page">
        <layout class="QVBoxLayout" name="verticalLayout">
@@ -49,9 +49,15 @@
        </layout>
       </widget>
       <widget class="QWidget" name="page_2">
-       <layout class="QVBoxLayout" name="verticalLayout_3">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_3"/>
+      </widget>
+      <widget class="QWidget" name="page_8">
+       <layout class="QVBoxLayout" name="verticalLayout_7">
         <item>
-         <widget class="QTableView" name="tableWorkingHours"/>
+         <widget class="QTableView" name="tableSim"/>
         </item>
        </layout>
       </widget>
@@ -105,15 +111,21 @@
     </property>
     <addaction name="actionTables"/>
     <addaction name="actionOrganizations"/>
-    <addaction name="actionJoin_Table"/>
     <addaction name="actionChampionship"/>
     <addaction name="actionAge"/>
     <addaction name="actionWeight"/>
     <addaction name="actionExperience"/>
    </widget>
+   <widget class="QMenu" name="menuSimulate">
+    <property name="title">
+     <string>Simulate</string>
+    </property>
+    <addaction name="actionNext_Round"/>
+   </widget>
    <addaction name="menuEdit"/>
    <addaction name="menuDatabase"/>
    <addaction name="menuTables"/>
+   <addaction name="menuSimulate"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -219,6 +231,11 @@
   <action name="actionExperience">
    <property name="text">
     <string>Experience</string>
+   </property>
+  </action>
+  <action name="actionNext_Round">
+   <property name="text">
+    <string>Next Round</string>
    </property>
   </action>
  </widget>

@@ -27,12 +27,15 @@ MainWindow::MainWindow(QWidget *parent) :
     m_tableActions->addAction(ui->actionAge);
     m_tableActions->addAction(ui->actionWeight);
     m_tableActions->addAction(ui->actionJoin_Table);
+    //m_tableActions->addAction(ui->actionNext_Round);
+
     connect(m_tableActions, &QActionGroup::triggered, this, &MainWindow::onTableActionsTriggered);
     connect(ui->actionAdd_Item, &QAction::triggered, this, &MainWindow::onAddItem);
     connect(ui->actionAdd_Organization, &QAction::triggered, this, &MainWindow::onAddOrganization);
     connect(ui->actionAdd_Championship, &QAction::triggered, this, &MainWindow::onAddChampionship);
     connect(ui->actionAdd_Age_Category, &QAction::triggered, this, &MainWindow::onAddAgeCategory);
     connect(ui->actionAdd_Weight_Category, &QAction::triggered, this, &MainWindow::onAddWeightCategory);
+
     m_AddParticipant = new AddParticipant(this);
     m_addOrganization = new AddOrganization(this);
     m_addAgeCategory = new AddAgeCategory(this);
@@ -61,13 +64,15 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     setupModel();
     ui->tablePersons->setModel(m_personsModel);
+     ui->tableSim->setModel(m_participantJoinChampModel);
     ui->tableOrganization->setModel(m_organizationModel);
     ui->tableChampionship->setModel(m_championshipModel);
     ui->tableAge->setModel(m_ageModel);
     ui->tableWeight->setModel(m_weightModel);
-    ui->tableWorkingHours->setModel(m_workingHoursModel);
-    ui->tableWorkingHoursJoinPersons->setModel(m_workingHoursJoinPersonsModel);
+   // ui->tableWorkingHours->setModel(m_workingHoursModel);
+    //ui->tableWorkingHoursJoinPersons->setModel(m_workingHoursJoinPersonsModel);
     connect(ui->actionRefresh, &QAction::triggered, this, &MainWindow::onRefreshDB);
+    connect(ui->actionNext_Round, &QAction::triggered, this, &MainWindow::onNextRound);
 }
 
 MainWindow::~MainWindow()
@@ -187,8 +192,6 @@ void MainWindow::setupModel()
     m_personsModel->setHeaderData(2, Qt::Horizontal, tr("Last Name"));
     m_personsModel->select();
 
-
-
     // afiseaza oraganizatii
     ui->tableOrganization->setSelectionMode(QAbstractItemView::SingleSelection);
     m_organizationModel = new QSqlTableModel(this, m_db);
@@ -237,22 +240,24 @@ void MainWindow::setupModel()
     m_championshipModel->setHeaderData(6, Qt::Horizontal, tr("Final Score"));
     m_championshipModel->select();
 
-    m_workingHoursModel = new QSqlRelationalTableModel(this, m_db);
-    m_workingHoursModel->setTable("WorkingHours");
-    m_workingHoursModel->setRelation(0, QSqlRelation("Persons", "id", "lastname"));
-    m_workingHoursModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
-    m_workingHoursModel->setHeaderData(0, Qt::Horizontal, tr("Person"));
-    m_workingHoursModel->setHeaderData(1, Qt::Horizontal, tr("Hours"));
-    m_workingHoursModel->select();
+//    m_workingHoursModel = new QSqlRelationalTableModel(this, m_db);
+//    m_workingHoursModel->setTable("WorkingHours");
+//    m_workingHoursModel->setRelation(0, QSqlRelation("Persons", "id", "lastname"));
+//    m_workingHoursModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+//    m_workingHoursModel->setHeaderData(0, Qt::Horizontal, tr("Person"));
+//    m_workingHoursModel->setHeaderData(1, Qt::Horizontal, tr("Hours"));
+//    m_workingHoursModel->select();
 
-    m_workingHoursJoinPersonsModel = new QSqlQueryModel(this);
-    QSqlQuery query("SELECT workinghours.id, persons.firstname, persons.lastname, workinghours.hours \
-                       FROM workinghours INNER JOIN persons ON workinghours.id=persons.id");
-    m_workingHoursJoinPersonsModel->setQuery(query);
-    m_workingHoursJoinPersonsModel->setHeaderData(0, Qt::Horizontal, tr("Id"));
-    m_workingHoursJoinPersonsModel->setHeaderData(1, Qt::Horizontal, tr("First Name"));
-    m_workingHoursJoinPersonsModel->setHeaderData(2, Qt::Horizontal, tr("Last Name"));
-    m_workingHoursJoinPersonsModel->setHeaderData(3, Qt::Horizontal, tr("Hours"));
+    m_participantJoinChampModel = new QSqlQueryModel(this);
+    QSqlQuery query("SELECT Participanti.first_name, Participanti.last_name, championship.qualification_score, championship.quater_finals_score, championship.semifinals_score, championship.finale_score FROM Participanti INNER JOIN championship ON Participanti.championship_id=championship.championship_id");
+    m_participantJoinChampModel->setQuery(query);
+    m_participantJoinChampModel->setHeaderData(0, Qt::Horizontal, tr("First Name"));
+    m_participantJoinChampModel->setHeaderData(1, Qt::Horizontal, tr("Last Name"));
+    m_participantJoinChampModel->setHeaderData(2, Qt::Horizontal, tr("Qualificuation Score"));
+    m_participantJoinChampModel->setHeaderData(3, Qt::Horizontal, tr("Quaterfinal Score"));
+    m_participantJoinChampModel->setHeaderData(4, Qt::Horizontal, tr("Semifinal Score"));
+    m_participantJoinChampModel->setHeaderData(5, Qt::Horizontal, tr("Final Score"));
+    //m_participantJoinChampModel->select();
 }
 
 // introduce participant
@@ -266,8 +271,8 @@ void MainWindow::insertQuery(const QString &id, const QString &firstName, const 
     QSqlField ageField("age", QVariant::Int);
     QSqlField weightField("weight", QVariant::Int);
     QSqlField experienceField("experience", QVariant::String);
-    QSqlField weightIdField("weight_id", QVariant::String);
-    QSqlField ageIdField("age_id", QVariant::String);
+    QSqlField weightIdField("weight_id", QVariant::Int);
+    QSqlField ageIdField("age_id", QVariant::Int);
     QSqlField organizationIdField("organization_id", QVariant::Int);
     QSqlField championshipIdField("championship_id", QVariant::Int);
 
@@ -278,7 +283,7 @@ void MainWindow::insertQuery(const QString &id, const QString &firstName, const 
     weightField.setValue(weight);
     experienceField.setValue(experience);
     int weightId = calculateWeightId(weightField.value().toInt());
-    int ageId = calculateAgeId(weightField.value().toInt());
+    int ageId = calculateAgeId(ageField.value().toInt());
     weightIdField.setValue(weightId);
     ageIdField.setValue(ageId);
     organizationIdField.setValue(organization_id);
@@ -300,6 +305,7 @@ void MainWindow::insertQuery(const QString &id, const QString &firstName, const 
     if(!m_personsModel->submitAll())
     {
         ui->statusBar->showMessage(tr("Values not submitted to remote database!"));
+         qDebug()<< m_personsModel->lastError();
     }
     else
     {
@@ -349,6 +355,7 @@ void MainWindow::insertQuery1(const QString &minAge, const QString &maxAge, cons
     if(!m_ageModel->submitAll())
     {
         ui->statusBar->showMessage(tr("Values not submitted to remote database!"));
+
     }
     else
     {
@@ -450,33 +457,29 @@ int MainWindow::calculateAgeId(int age){
     return 0;
 }
 
-void MainWindow::insertQuery(const QString &id, const QString &hours)
-{
-    QSqlField idField("id", QVariant::Int);
-    QSqlField hoursField("hours", QVariant::Int);
-    idField.setValue(id);
-    hoursField.setValue(hours);
-    QSqlRecord record;
-    record.append(idField);
-    record.append(hoursField);
-    m_workingHoursModel->insertRecord(-1, record);
-    if(!m_workingHoursModel->submitAll())
-    {
-        ui->statusBar->showMessage(tr("Values not submitted to remote database!"));
-    }
-    else
-    {
-        ui->statusBar->showMessage(tr("Values submitted to remote database."));
-    }
-}
 
 void MainWindow::selectQuery()
 {
     m_personsModel->select();
-    m_workingHoursModel->select();
-    QSqlQuery query("SELECT workinghours.id, persons.firstname, persons.lastname, workinghours.hours \
-                       FROM workinghours INNER JOIN persons ON workinghours.id=persons.id");
-    m_workingHoursJoinPersonsModel->setQuery(query);
+   // m_workingHoursModel->select();
+
+    //m_workingHoursJoinPersonsModel->setQuery(query);
+}
+
+void MainWindow::onNextRound()
+{
+
+   // m_personsModel->select();
+   // m_championshipModel->select();
+       // ui->stackedWidget->setCurrentIndex(0);
+        //ui->tableSim->selectionModel()->clearSelection();
+   // m_participantJoinChampModel = new QSqlQueryModel(this);
+        QSqlQuery query("SELECT Participanti.first_name, Participanti.last_name, championship.qualification_score, championship.quater_finals_score, championship.semifinals_score, championship.finale_score FROM Participanti INNER JOIN championship ON Participanti.championship_id=championship.championship_id");
+        m_participantJoinChampModel->setQuery(query);
+         qDebug() <<query.lastError();
+         QTableView *view = new QTableView;
+         view->setModel(m_participantJoinChampModel);
+         view->show();
 }
 
 void MainWindow::onTableActionsTriggered(QAction *action)
@@ -493,16 +496,16 @@ void MainWindow::onTableActionsTriggered(QAction *action)
         ui->tableOrganization->selectionModel()->clearSelection();
     }
 
-    if(action == ui->actionJoin_Table)
-    {
-        ui->stackedWidget->setCurrentIndex(4);
-        ui->tablePersons->selectionModel()->clearSelection();
-    }
+//    if(action == ui->actionJoin_Table)
+//    {
+//        ui->stackedWidget->setCurrentIndex(4);
+//        ui->tablePersons->selectionModel()->clearSelection();
+//    }
 
     if(action == ui->actionChampionship)
     {
         //ui->stackedWidget->setCurrentWidget(ui->tableWorkingHours);
-        ui->stackedWidget->setCurrentIndex(5);
+        ui->stackedWidget->setCurrentIndex(6);
         ui->tableChampionship->selectionModel()->clearSelection();
     }
     if(action == ui->actionAge)
@@ -519,33 +522,33 @@ void MainWindow::onTableActionsTriggered(QAction *action)
     }
 }
 
-void MainWindow::onAddHours()
-{
-    QItemSelectionModel *selModel = ui->tablePersons->selectionModel();
-    QModelIndexList selIndexes = selModel->selectedIndexes();
-    if(selIndexes.count() == 0)
-    {
-        return;
-    }
-    QModelIndex index = selIndexes[0];
-    int row = index.row();
-    QString id = m_personsModel->itemData(index.sibling(row, 0))[Qt::EditRole].toString();
-    QString firstName = m_personsModel->itemData(index.sibling(row, 1))[Qt::EditRole].toString();
-    QString lastName = m_personsModel->itemData(index.sibling(row, 2))[Qt::EditRole].toString();
-    QString age = m_personsModel->itemData(index.sibling(row, 3))[Qt::EditRole].toString();
-    QString weight = m_personsModel->itemData(index.sibling(row, 4))[Qt::EditRole].toString();
-    QString experience = m_personsModel->itemData(index.sibling(row, 5))[Qt::EditRole].toString();
-    QString organization_id = m_personsModel->itemData(index.sibling(row, 6))[Qt::EditRole].toString();
-    QString championship_id = m_personsModel->itemData(index.sibling(row, 7))[Qt::EditRole].toString();
+//void MainWindow::onAddHours()
+//{
+//    QItemSelectionModel *selModel = ui->tablePersons->selectionModel();
+//    QModelIndexList selIndexes = selModel->selectedIndexes();
+//    if(selIndexes.count() == 0)
+//    {
+//        return;
+//    }
+//    QModelIndex index = selIndexes[0];
+//    int row = index.row();
+//    QString id = m_personsModel->itemData(index.sibling(row, 0))[Qt::EditRole].toString();
+//    QString firstName = m_personsModel->itemData(index.sibling(row, 1))[Qt::EditRole].toString();
+//    QString lastName = m_personsModel->itemData(index.sibling(row, 2))[Qt::EditRole].toString();
+//    QString age = m_personsModel->itemData(index.sibling(row, 3))[Qt::EditRole].toString();
+//    QString weight = m_personsModel->itemData(index.sibling(row, 4))[Qt::EditRole].toString();
+//    QString experience = m_personsModel->itemData(index.sibling(row, 5))[Qt::EditRole].toString();
+//    QString organization_id = m_personsModel->itemData(index.sibling(row, 6))[Qt::EditRole].toString();
+//    QString championship_id = m_personsModel->itemData(index.sibling(row, 7))[Qt::EditRole].toString();
 
-    m_AddParticipant->setType(AddParticipant::AddType::ADD_HOURS);
-    m_AddParticipant->setData(firstName, lastName, id, age, weight, experience,organization_id,championship_id);
-    int r = m_AddParticipant->exec();
-    if(r == QDialog::Rejected)
-    {
-        return;
-    }
-//    QString hours;
-//    m_AddParticipant->hours(hours);
-//    insertQuery(id, hours);
-}
+//    m_AddParticipant->setType(AddParticipant::AddType::ADD_HOURS);
+//    m_AddParticipant->setData(firstName, lastName, id, age, weight, experience,organization_id,championship_id);
+//    int r = m_AddParticipant->exec();
+//    if(r == QDialog::Rejected)
+//    {
+//        return;
+//    }
+////    QString hours;
+////   m_AddParticipant->hours(hours);
+////    insertQuery(id, hours);
+//}
