@@ -1,22 +1,22 @@
-#include "additemdialog.h"
-#include "ui_additemdialog.h"
+#include "addparticipant.h"
+#include "ui_AddParticipant.h"
 
 #include <QMessageBox>
 
-AddItemDialog::AddItemDialog(QWidget *parent) :
+AddParticipant::AddParticipant(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::AddItemDialog),
-    m_type(AddItemDialog::AddType::ADD_PERSON)
+    ui(new Ui::AddParticipant),
+    m_type(AddParticipant::AddType::ADD_PERSON)
 {
     ui->setupUi(this);
 }
 
-AddItemDialog::~AddItemDialog()
+AddParticipant::~AddParticipant()
 {
     delete ui;
 }
 
-void AddItemDialog::setData(const QString &firstName, const QString &lastName, const QString &id,
+void AddParticipant::setData(const QString &firstName, const QString &lastName, const QString &id,
                             const QString &age, const QString &weight, const QString &experience)
 {
     ui->firstName->setText(firstName);
@@ -27,14 +27,14 @@ void AddItemDialog::setData(const QString &firstName, const QString &lastName, c
     ui->experience->setText(experience);
 }
 
-//void AddItemDialog::data(QString &name, QString &info, QString &id)
+//void AddParticipant::data(QString &name, QString &info, QString &id)
 //{
 //    name = ui->name->text();
 //    info = ui->info->text();
 //    id = ui->id->text();
 
 //}
-void AddItemDialog::data(QString &firstName, QString &lastName, QString &id,
+void AddParticipant::data(QString &firstName, QString &lastName, QString &id,
                           QString &age,  QString &weight,  QString &experience)
 {
     firstName = ui->firstName->text();
@@ -45,7 +45,7 @@ void AddItemDialog::data(QString &firstName, QString &lastName, QString &id,
     experience = ui->experience->text();
 }
 
-void AddItemDialog::accept()
+void AddParticipant::accept()
 {
     bool ok = true;
 
@@ -76,7 +76,7 @@ void AddItemDialog::accept()
 //    }
 }
 
-void AddItemDialog::showEvent(QShowEvent *)
+void AddParticipant::showEvent(QShowEvent *)
 {
     if(m_type == AddType::ADD_PERSON)
     {
@@ -106,17 +106,17 @@ void AddItemDialog::showEvent(QShowEvent *)
     }
 }
 
-void AddItemDialog::setType(AddType type)
+void AddParticipant::setType(AddType type)
 {
     m_type = type;
 }
 
-//void AddItemDialog::setHours(const QString &hours)
+//void AddParticipant::setHours(const QString &hours)
 //{
 //    ui->hours->setText(hours);
 //}
 
-//void AddItemDialog::hours(QString &hours)
+//void AddParticipant::hours(QString &hours)
 //{
 //    hours = ui->hours->text();
 //}

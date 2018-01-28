@@ -1,13 +1,13 @@
-#ifndef ADDITEMDIALOG_H
-#define ADDITEMDIALOG_H
+#ifndef AddParticipant_H
+#define AddParticipant_H
 
 #include <QDialog>
 
 namespace Ui {
-class AddItemDialog;
+class AddParticipant;
 }
 
-class AddItemDialog : public QDialog
+class AddParticipant : public QDialog
 {
     Q_OBJECT
 
@@ -19,8 +19,8 @@ public:
     };
 
 public:
-    explicit AddItemDialog(QWidget *parent = 0);
-    ~AddItemDialog();
+    explicit AddParticipant(QWidget *parent = 0);
+    ~AddParticipant();
 
     void setData(const QString &firstName, const QString &lastName, const QString &id,
                  const QString &age, const QString &weight, const QString &experience);
@@ -36,8 +36,8 @@ protected:
     void showEvent(QShowEvent *);
 
 private:
-    Ui::AddItemDialog *ui;
+    Ui::AddParticipant *ui;
     AddType m_type;
 };
 
-#endif // ADDITEMDIALOG_H
+#endif // AddParticipant_H

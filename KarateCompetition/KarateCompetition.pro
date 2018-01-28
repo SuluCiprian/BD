@@ -26,24 +26,24 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    additemdialog.cpp \
     addorganization.cpp \
     addchampionship.cpp \
     addagecategory.cpp \
-    addweightcategory.cpp
+    addweightcategory.cpp \
+    addparticipant.cpp
 
 HEADERS += \
         mainwindow.h \
-    additemdialog.h \
     addorganization.h \
     addchampionship.h \
     addagecategory.h \
-    addweightcategory.h
+    addweightcategory.h \
+    addparticipant.h
 
 FORMS += \
         mainwindow.ui \
-    additemdialog.ui \
     addorganization.ui \
     addchampionship.ui \
     addagecategory.ui \
-    addweightcategory.ui
+    addweightcategory.ui \
+    addparticipant.ui

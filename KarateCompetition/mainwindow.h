@@ -13,7 +13,7 @@ using namespace std;
 namespace Ui {
 class MainWindow;
 }
-class AddItemDialog;
+class AddParticipant;
 class QActionGroup;
 class AddOrganization;
 class AddChampionship;
@@ -57,7 +57,7 @@ private:
 private:
     Ui::MainWindow *ui;
     QActionGroup *m_tableActions;
-    AddItemDialog *m_addItemDialog;
+    AddParticipant *m_AddParticipant;
     AddOrganization *m_addOrganization;
     AddChampionship *m_addChampionship;
     AddAgeCategory *m_addAgeCategory;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>AddItemDialog</class>
- <widget class="QDialog" name="AddItemDialog">
+ <class>AddParticipant</class>
+ <widget class="QDialog" name="AddParticipant">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -99,7 +99,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>AddItemDialog</receiver>
+   <receiver>AddParticipant</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -115,7 +115,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>AddItemDialog</receiver>
+   <receiver>AddParticipant</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

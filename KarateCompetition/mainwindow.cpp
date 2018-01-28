@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "additemdialog.h"
+#include "addparticipant.h"
 #include "addorganization.h"
 #include "addagecategory.h"
 #include "addchampionship.h"
@@ -33,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionAdd_Championship, &QAction::triggered, this, &MainWindow::onAddChampionship);
     connect(ui->actionAdd_Age_Category, &QAction::triggered, this, &MainWindow::onAddAgeCategory);
     connect(ui->actionAdd_Weight_Category, &QAction::triggered, this, &MainWindow::onAddWeightCategory);
-    m_addItemDialog = new AddItemDialog(this);
+    m_AddParticipant = new AddParticipant(this);
     m_addOrganization = new AddOrganization(this);
     m_addAgeCategory = new AddAgeCategory(this);
     m_addWeightCategory = new AddWeightCategory(this);
@@ -88,8 +88,8 @@ void MainWindow::readSettings(QString &hostName, QString &databaseName, QString 
 
 void MainWindow::onAddItem()
 {
-    m_addItemDialog->setType(AddItemDialog::AddType::ADD_PERSON);
-    int r = m_addItemDialog->exec();
+    m_AddParticipant->setType(AddParticipant::AddType::ADD_PERSON);
+    int r = m_AddParticipant->exec();
     if(r == QDialog::Accepted)
     {
         QString firstName;
@@ -98,7 +98,7 @@ void MainWindow::onAddItem()
         QString age;
         QString weight;
         QString experience;
-        m_addItemDialog->data(firstName, lastName, id, age, weight, experience);
+        m_AddParticipant->data(firstName, lastName, id, age, weight, experience);
         insertQuery(id, firstName, lastName, age, weight, experience);
     }
 }
@@ -183,6 +183,7 @@ void MainWindow::setupModel()
     m_personsModel->setHeaderData(1, Qt::Horizontal, tr("First Name"));
     m_personsModel->setHeaderData(2, Qt::Horizontal, tr("Last Name"));
     m_personsModel->select();
+
 
 
     // Adauga oraganizatii
@@ -476,14 +477,14 @@ void MainWindow::onAddHours()
     QString weight = m_personsModel->itemData(index.sibling(row, 4))[Qt::EditRole].toString();
     QString experience = m_personsModel->itemData(index.sibling(row, 5))[Qt::EditRole].toString();
 
-    m_addItemDialog->setType(AddItemDialog::AddType::ADD_HOURS);
-    m_addItemDialog->setData(firstName, lastName, id, age, weight, experience);
-    int r = m_addItemDialog->exec();
+    m_AddParticipant->setType(AddParticipant::AddType::ADD_HOURS);
+    m_AddParticipant->setData(firstName, lastName, id, age, weight, experience);
+    int r = m_AddParticipant->exec();
     if(r == QDialog::Rejected)
     {
         return;
     }
 //    QString hours;
-//    m_addItemDialog->hours(hours);
+//    m_AddParticipant->hours(hours);
 //    insertQuery(id, hours);
 }
