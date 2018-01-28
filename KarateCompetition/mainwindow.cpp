@@ -98,8 +98,11 @@ void MainWindow::onAddItem()
         QString age;
         QString weight;
         QString experience;
-        m_AddParticipant->data(firstName, lastName, id, age, weight, experience);
-        insertQuery(id, firstName, lastName, age, weight, experience);
+        QString organization_id;
+        QString championship_id;
+
+        m_AddParticipant->data(firstName, lastName, id, age, weight, experience,organization_id,championship_id);
+        insertQuery(id, firstName, lastName, age, weight, experience,organization_id,championship_id);
     }
 }
 
@@ -173,7 +176,7 @@ void MainWindow::onRefreshDB()
 
 void MainWindow::setupModel()
 {
-    // Adauga Participanti
+    // afiseaza Participanti
     ui->tablePersons->setSelectionMode(QAbstractItemView::SingleSelection);
     m_personsModel = new QSqlTableModel(this, m_db);
     m_personsModel->setTable("Participanti");
@@ -186,7 +189,7 @@ void MainWindow::setupModel()
 
 
 
-    // Adauga oraganizatii
+    // afiseaza oraganizatii
     ui->tableOrganization->setSelectionMode(QAbstractItemView::SingleSelection);
     m_organizationModel = new QSqlTableModel(this, m_db);
     m_organizationModel->setTable("organization");
@@ -197,29 +200,29 @@ void MainWindow::setupModel()
     m_organizationModel->setHeaderData(2, Qt::Horizontal, tr("Info"));
     m_organizationModel->select();
 
-    // Adauga categorii varsta
+    // afiseaza categorii varsta
     ui->tableAge->setSelectionMode(QAbstractItemView::SingleSelection);
     m_ageModel = new QSqlTableModel(this, m_db);
     m_ageModel->setTable("age");
 //  m_model->setEditStrategy(QSqlTableModel::OnFieldChange);
     m_ageModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
-    m_ageModel->setHeaderData(0, Qt::Horizontal, tr("Min Age"));
-    m_ageModel->setHeaderData(1, Qt::Horizontal, tr("Max Age"));
-    m_ageModel->setHeaderData(2, Qt::Horizontal, tr("Age Id"));
+    m_ageModel->setHeaderData(0, Qt::Horizontal, tr("Age Id"));
+    m_ageModel->setHeaderData(1, Qt::Horizontal, tr("Min Age"));
+    m_ageModel->setHeaderData(2, Qt::Horizontal, tr("Max Age"));
     m_ageModel->select();
 
-    // Adauga categorii greutate
+    // afiseaza categorii greutate
     ui->tableWeight->setSelectionMode(QAbstractItemView::SingleSelection);
     m_weightModel = new QSqlTableModel(this, m_db);
     m_weightModel->setTable("weight");
 //  m_model->setEditStrategy(QSqlTableModel::OnFieldChange);
     m_weightModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
-    m_weightModel->setHeaderData(0, Qt::Horizontal, tr("Min weight"));
-    m_weightModel->setHeaderData(1, Qt::Horizontal, tr("Max weight"));
-    m_weightModel->setHeaderData(2, Qt::Horizontal, tr("Weight Id"));
+    m_weightModel->setHeaderData(0, Qt::Horizontal, tr("Weight Id"));
+    m_weightModel->setHeaderData(1, Qt::Horizontal, tr("Min Weight"));
+    m_weightModel->setHeaderData(2, Qt::Horizontal, tr("Max Weight"));
     m_weightModel->select();
 
-    // Adauga campionat
+    // afiseaza campionat
     ui->tableChampionship->setSelectionMode(QAbstractItemView::SingleSelection);
     m_championshipModel = new QSqlTableModel(this, m_db);
     m_championshipModel->setTable("championship");
@@ -252,8 +255,10 @@ void MainWindow::setupModel()
     m_workingHoursJoinPersonsModel->setHeaderData(3, Qt::Horizontal, tr("Hours"));
 }
 
+// introduce participant
 void MainWindow::insertQuery(const QString &id, const QString &firstName, const QString &lastName,
-                             const QString &age, const QString &weight, const QString &experience)
+                             const QString &age, const QString &weight, const QString &experience,
+                              const QString &organization_id, const QString &championship_id)
 {
     QSqlField idField("participant_id", QVariant::Int);
     QSqlField firstNameField("first_name", QVariant::String);
@@ -261,12 +266,24 @@ void MainWindow::insertQuery(const QString &id, const QString &firstName, const 
     QSqlField ageField("age", QVariant::Int);
     QSqlField weightField("weight", QVariant::Int);
     QSqlField experienceField("experience", QVariant::String);
+    QSqlField weightIdField("weight_id", QVariant::String);
+    QSqlField ageIdField("age_id", QVariant::String);
+    QSqlField organizationIdField("organization_id", QVariant::Int);
+    QSqlField championshipIdField("championship_id", QVariant::Int);
+
     idField.setValue(id);
     firstNameField.setValue(firstName);
     lastNameField.setValue(lastName);
     ageField.setValue(age);
     weightField.setValue(weight);
     experienceField.setValue(experience);
+    int weightId = calculateWeightId(weightField.value().toInt());
+    int ageId = calculateAgeId(weightField.value().toInt());
+    weightIdField.setValue(weightId);
+    ageIdField.setValue(ageId);
+    organizationIdField.setValue(organization_id);
+    championshipIdField.setValue(championship_id);
+
     QSqlRecord record;
     record.append(idField);
     record.append(firstNameField);
@@ -274,6 +291,11 @@ void MainWindow::insertQuery(const QString &id, const QString &firstName, const 
     record.append(ageField);
     record.append(weightField);
     record.append(experienceField);
+    record.append(weightIdField);
+    record.append(ageIdField);
+    record.append(organizationIdField);
+    record.append(championshipIdField);
+
     m_personsModel->insertRecord(-1, record);
     if(!m_personsModel->submitAll())
     {
@@ -285,6 +307,8 @@ void MainWindow::insertQuery(const QString &id, const QString &firstName, const 
     }
 }
 
+
+// introduce organiatie
 void MainWindow::insertQuery(const QString &name, const QString &info, const QString &organization_id)
 {
     QSqlField idField("organization_id", QVariant::Int);
@@ -308,6 +332,7 @@ void MainWindow::insertQuery(const QString &name, const QString &info, const QSt
     }
 }
 
+// adauga categorie varsta
 void MainWindow::insertQuery1(const QString &minAge, const QString &maxAge, const QString &age_id)
 {
     QSqlField idField("age_id", QVariant::Int);
@@ -331,6 +356,7 @@ void MainWindow::insertQuery1(const QString &minAge, const QString &maxAge, cons
     }
 }
 
+// adacuga categorie greutate
 void MainWindow::insertQuery2(const QString &min_bound, const QString &max_bound, const QString &weight_id)
 {
     QSqlField idField("weight_id", QVariant::Int);
@@ -354,6 +380,7 @@ void MainWindow::insertQuery2(const QString &min_bound, const QString &max_bound
     }
 }
 
+// adauga campionat
 void MainWindow::insertQuery(const QString &name, const QString &location, const QString &championship_id,
                              const QString &qualification_score, const QString &quater_finals_score,
                              const QString &semifinals_score, const QString &finale_score)
@@ -389,6 +416,38 @@ void MainWindow::insertQuery(const QString &name, const QString &location, const
     {
         ui->statusBar->showMessage(tr("Values submitted to remote database."));
     }
+}
+
+int MainWindow::calculateWeightId(int weight){
+    QSqlQuery query(m_db);
+    query.prepare("SELECT * FROM weight");
+    query.exec();
+    while(query.next()) {
+
+        int id = query.value("weight_id").toInt();
+        int min_bound = query.value("min_bound").toInt();
+        int max_bound = query.value("max_bound").toInt();
+        if(weight <= max_bound && weight > min_bound ){
+            return id;
+        }
+    }
+    return 0;
+}
+
+int MainWindow::calculateAgeId(int age){
+    QSqlQuery query(m_db);
+    query.prepare("SELECT * FROM age");
+    query.exec();
+    while(query.next()) {
+
+        int id = query.value("age_id").toInt();
+        int min_bound = query.value("min_bound").toInt();
+        int max_bound = query.value("max_bound").toInt();
+        if(age <= max_bound && age > min_bound ){
+            return id;
+        }
+    }
+    return 0;
 }
 
 void MainWindow::insertQuery(const QString &id, const QString &hours)
@@ -476,9 +535,11 @@ void MainWindow::onAddHours()
     QString age = m_personsModel->itemData(index.sibling(row, 3))[Qt::EditRole].toString();
     QString weight = m_personsModel->itemData(index.sibling(row, 4))[Qt::EditRole].toString();
     QString experience = m_personsModel->itemData(index.sibling(row, 5))[Qt::EditRole].toString();
+    QString organization_id = m_personsModel->itemData(index.sibling(row, 6))[Qt::EditRole].toString();
+    QString championship_id = m_personsModel->itemData(index.sibling(row, 7))[Qt::EditRole].toString();
 
     m_AddParticipant->setType(AddParticipant::AddType::ADD_HOURS);
-    m_AddParticipant->setData(firstName, lastName, id, age, weight, experience);
+    m_AddParticipant->setData(firstName, lastName, id, age, weight, experience,organization_id,championship_id);
     int r = m_AddParticipant->exec();
     if(r == QDialog::Rejected)
     {

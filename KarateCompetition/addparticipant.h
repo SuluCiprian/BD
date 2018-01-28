@@ -23,9 +23,9 @@ public:
     ~AddParticipant();
 
     void setData(const QString &firstName, const QString &lastName, const QString &id,
-                 const QString &age, const QString &weight, const QString &experience);
+                 const QString &age, const QString &weight, const QString &experience, const QString &organization_id, const QString &championship_id);
     void data(QString &firstName, QString &lastName, QString &id,
-               QString &age,  QString &weight,  QString &experience);
+               QString &age,  QString &weight,  QString &experience,  QString &organization_id,  QString &championship_id);
    // void data(QString &name, QString &info, QString &id);
     void setType(AddType type);
     //void setHours(const QString &hours);

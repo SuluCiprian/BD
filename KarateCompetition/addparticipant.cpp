@@ -17,7 +17,7 @@ AddParticipant::~AddParticipant()
 }
 
 void AddParticipant::setData(const QString &firstName, const QString &lastName, const QString &id,
-                            const QString &age, const QString &weight, const QString &experience)
+                            const QString &age, const QString &weight, const QString &experience, const QString &organization_id, const QString &championship_id)
 {
     ui->firstName->setText(firstName);
     ui->lastName->setText(lastName);
@@ -25,6 +25,8 @@ void AddParticipant::setData(const QString &firstName, const QString &lastName, 
     ui->age->setText(age);
     ui->weight->setText(weight);
     ui->experience->setText(experience);
+    ui->organization_id->setText(organization_id);
+    ui->organization_id->setText(championship_id);
 }
 
 //void AddParticipant::data(QString &name, QString &info, QString &id)
@@ -35,7 +37,7 @@ void AddParticipant::setData(const QString &firstName, const QString &lastName, 
 
 //}
 void AddParticipant::data(QString &firstName, QString &lastName, QString &id,
-                          QString &age,  QString &weight,  QString &experience)
+                          QString &age,  QString &weight,  QString &experience,  QString &organization_id,  QString &championship_id)
 {
     firstName = ui->firstName->text();
     lastName = ui->lastName->text();
@@ -43,6 +45,8 @@ void AddParticipant::data(QString &firstName, QString &lastName, QString &id,
     age = ui->age->text();
     weight = ui->weight->text();
     experience = ui->experience->text();
+    organization_id = ui->organization_id->text();
+    championship_id = ui->championship_id->text();
 }
 
 void AddParticipant::accept()
@@ -80,13 +84,15 @@ void AddParticipant::showEvent(QShowEvent *)
 {
     if(m_type == AddType::ADD_PERSON)
     {
-        setData("", "", "", "", "", "");
+        setData("", "", "", "", "", "", "", "");
         ui->firstName->setEnabled(true);
         ui->lastName->setEnabled(true);
         ui->id->setEnabled(true);
         ui->age->setEnabled(true);
         ui->weight->setEnabled(true);
         ui->experience->setEnabled(true);
+        ui->organization_id->setEnabled(true);
+        ui->championship_id->setEnabled(true);
 
 //        ui->hours->setVisible(false);
 //        ui->labelHours->setVisible(false);
