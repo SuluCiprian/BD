@@ -5,6 +5,7 @@
 #include "addagecategory.h"
 #include "addchampionship.h"
 #include "addweightcategory.h"
+#include "addexperiencecategory.h"
 
 #include <QSqlQuery>
 #include <QSqlError>
@@ -26,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_tableActions->addAction(ui->actionChampionship);
     m_tableActions->addAction(ui->actionAge);
     m_tableActions->addAction(ui->actionWeight);
+    m_tableActions->addAction(ui->actionExperience);
     m_tableActions->addAction(ui->actionJoin_Table);
     //m_tableActions->addAction(ui->actionNext_Round);
 
@@ -35,12 +37,15 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionAdd_Championship, &QAction::triggered, this, &MainWindow::onAddChampionship);
     connect(ui->actionAdd_Age_Category, &QAction::triggered, this, &MainWindow::onAddAgeCategory);
     connect(ui->actionAdd_Weight_Category, &QAction::triggered, this, &MainWindow::onAddWeightCategory);
+    connect(ui->actionAdd_Experience_Category, &QAction::triggered, this, &MainWindow::onAddExperienceCategory);
 
     m_AddParticipant = new AddParticipant(this);
     m_addOrganization = new AddOrganization(this);
     m_addAgeCategory = new AddAgeCategory(this);
     m_addWeightCategory = new AddWeightCategory(this);
     m_addChampionship = new AddChampionship(this);
+    m_addExperienceCategory = new AddExperienceCategory(this);
+
     QString hostName = "baasu.db.elephantsql.com";
     QString databaseName = "xuiqwkse";
     QString userName = "xuiqwkse";
@@ -64,11 +69,12 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     setupModel();
     ui->tablePersons->setModel(m_personsModel);
-     ui->tableSim->setModel(m_participantJoinChampModel);
+    ui->tableSim->setModel(m_participantJoinChampModel);
     ui->tableOrganization->setModel(m_organizationModel);
     ui->tableChampionship->setModel(m_championshipModel);
     ui->tableAge->setModel(m_ageModel);
     ui->tableWeight->setModel(m_weightModel);
+    ui->tableExperience->setModel(m_experienceModel);
    // ui->tableWorkingHours->setModel(m_workingHoursModel);
     //ui->tableWorkingHoursJoinPersons->setModel(m_workingHoursJoinPersonsModel);
     connect(ui->actionRefresh, &QAction::triggered, this, &MainWindow::onRefreshDB);
@@ -138,6 +144,19 @@ void MainWindow::onAddAgeCategory()
     }
 }
 
+void MainWindow::onAddExperienceCategory()
+{
+    m_addExperienceCategory->setType(AddExperienceCategory::AddType::ADD_PERSON);
+    int r = m_addExperienceCategory->exec();
+    if(r == QDialog::Accepted)
+    {
+        QString exp;
+        QString experience_id;
+        m_addExperienceCategory->data(exp, experience_id);
+        insertQuery(exp, experience_id);
+    }
+}
+
 void MainWindow::onAddWeightCategory()
 {
     m_addWeightCategory->setType(AddWeightCategory::AddType::ADD_PERSON);
@@ -181,7 +200,7 @@ void MainWindow::onRefreshDB()
 
 void MainWindow::setupModel()
 {
-    // afiseaza Participanti
+    // model Participanti
     ui->tablePersons->setSelectionMode(QAbstractItemView::SingleSelection);
     m_personsModel = new QSqlTableModel(this, m_db);
     m_personsModel->setTable("Participanti");
@@ -192,7 +211,7 @@ void MainWindow::setupModel()
     m_personsModel->setHeaderData(2, Qt::Horizontal, tr("Last Name"));
     m_personsModel->select();
 
-    // afiseaza oraganizatii
+    // model oraganizatii
     ui->tableOrganization->setSelectionMode(QAbstractItemView::SingleSelection);
     m_organizationModel = new QSqlTableModel(this, m_db);
     m_organizationModel->setTable("organization");
@@ -203,7 +222,7 @@ void MainWindow::setupModel()
     m_organizationModel->setHeaderData(2, Qt::Horizontal, tr("Info"));
     m_organizationModel->select();
 
-    // afiseaza categorii varsta
+    // model categorii varsta
     ui->tableAge->setSelectionMode(QAbstractItemView::SingleSelection);
     m_ageModel = new QSqlTableModel(this, m_db);
     m_ageModel->setTable("age");
@@ -214,7 +233,7 @@ void MainWindow::setupModel()
     m_ageModel->setHeaderData(2, Qt::Horizontal, tr("Max Age"));
     m_ageModel->select();
 
-    // afiseaza categorii greutate
+    // model categorii greutate
     ui->tableWeight->setSelectionMode(QAbstractItemView::SingleSelection);
     m_weightModel = new QSqlTableModel(this, m_db);
     m_weightModel->setTable("weight");
@@ -225,7 +244,17 @@ void MainWindow::setupModel()
     m_weightModel->setHeaderData(2, Qt::Horizontal, tr("Max Weight"));
     m_weightModel->select();
 
-    // afiseaza campionat
+    // model categorii experienta
+    ui->tableExperience->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_experienceModel = new QSqlTableModel(this, m_db);
+    m_experienceModel->setTable("experience");
+//  m_model->setEditStrategy(QSqlTableModel::OnFieldChange);
+    m_experienceModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    m_experienceModel->setHeaderData(0, Qt::Horizontal, tr("Id"));
+    m_experienceModel->setHeaderData(1, Qt::Horizontal, tr("Experience"));
+    m_experienceModel->select();
+
+    // model campionat
     ui->tableChampionship->setSelectionMode(QAbstractItemView::SingleSelection);
     m_championshipModel = new QSqlTableModel(this, m_db);
     m_championshipModel->setTable("championship");
@@ -329,6 +358,27 @@ void MainWindow::insertQuery(const QString &name, const QString &info, const QSt
     record.append(infoField);
     m_organizationModel->insertRecord(-1, record);
     if(!m_organizationModel->submitAll())
+    {
+        ui->statusBar->showMessage(tr("Values not submitted to remote database!"));
+    }
+    else
+    {
+        ui->statusBar->showMessage(tr("Values submitted to remote database."));
+    }
+}
+
+// introduce experienta
+void MainWindow::insertQuery(const QString &exp, const QString &experience_id)
+{
+    QSqlField idField("experience_id", QVariant::Int);
+    QSqlField expField("exp", QVariant::String);
+    idField.setValue(experience_id);
+    expField.setValue(exp);
+    QSqlRecord record;
+    record.append(idField);
+    record.append(expField);
+    m_experienceModel->insertRecord(-1, record);
+    if(!m_experienceModel->submitAll())
     {
         ui->statusBar->showMessage(tr("Values not submitted to remote database!"));
     }
@@ -496,12 +546,6 @@ void MainWindow::onTableActionsTriggered(QAction *action)
         ui->tableOrganization->selectionModel()->clearSelection();
     }
 
-//    if(action == ui->actionJoin_Table)
-//    {
-//        ui->stackedWidget->setCurrentIndex(4);
-//        ui->tablePersons->selectionModel()->clearSelection();
-//    }
-
     if(action == ui->actionChampionship)
     {
         //ui->stackedWidget->setCurrentWidget(ui->tableWorkingHours);
@@ -519,6 +563,12 @@ void MainWindow::onTableActionsTriggered(QAction *action)
         //ui->stackedWidget->setCurrentWidget(ui->tableWorkingHours);
         ui->stackedWidget->setCurrentIndex(3);
         ui->tableAge->selectionModel()->clearSelection();
+    }
+    if(action == ui->actionExperience)
+    {
+        //ui->stackedWidget->setCurrentWidget(ui->tableWorkingHours);
+        ui->stackedWidget->setCurrentIndex(4);
+        ui->tableExperience->selectionModel()->clearSelection();
     }
 }
 

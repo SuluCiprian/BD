@@ -14,11 +14,11 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_2">
+   <layout class="QVBoxLayout" name="verticalLayout_3">
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>5</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="page">
        <layout class="QVBoxLayout" name="verticalLayout">
@@ -48,11 +48,18 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="page_9">
+       <layout class="QVBoxLayout" name="verticalLayout_8">
+        <item>
+         <widget class="QTableView" name="tableExperience"/>
+        </item>
+       </layout>
+      </widget>
       <widget class="QWidget" name="page_2">
        <property name="enabled">
         <bool>false</bool>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout_3"/>
+       <layout class="QHBoxLayout" name="horizontalLayout_3"/>
       </widget>
       <widget class="QWidget" name="page_8">
        <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -229,6 +236,9 @@
    </property>
   </action>
   <action name="actionExperience">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Experience</string>
    </property>
