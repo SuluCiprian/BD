@@ -16,6 +16,8 @@
 #include <QActionGroup>
 #include <QItemSelectionModel>
 #include <QDebug>
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>       /* time */
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -69,6 +71,7 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->statusBar->showMessage(tr("Database connected!"));
         iterateChampionship();
         iterateParticipants();
+        simulateFights();
     }
     setupModel();
     ui->tablePersons->setModel(m_personsModel);
@@ -471,10 +474,46 @@ void MainWindow::insertQuery(const QString &name, const QString &location, const
     if(!m_championshipModel->submitAll())
     {
         ui->statusBar->showMessage(tr("Values not submitted to remote database!"));
+        qDebug()<<"Eroare champ: " << m_championshipModel->lastError();
     }
     else
     {
         ui->statusBar->showMessage(tr("Values submitted to remote database."));
+    }
+}
+
+void MainWindow::simulateFights()
+{
+    srand (time(NULL));
+    int r, champId,a=30,b=4;
+    Championship champ;
+    QString update;
+    for(int i= 1; i<=8;i+=2)
+    {
+        r =rand() % 2;
+        if(r)
+        {
+            qDebug() << participanti[i].getFirstName() << " a castigat";
+            champId = participanti[i].getChampionshipId();
+            //getChampionshipById(champId);
+            qDebug() <<getChampionshipById(champId).getName();
+            getChampionshipById(champId).setQualificationScore(10);
+
+        }
+        else
+        {
+            qDebug() << participanti[i+1].getFirstName() << " a castigat";
+            champId = participanti[i+1].getChampionshipId();
+            champ = getChampionshipById(champId);
+            qDebug() <<champ.getName();
+        }
+        QSqlQuery query(m_db);
+        update =QString("UPDATE championship SET qualification_score = '%1' WHERE championship_id = %2 ;").arg(10).arg(champId);
+       // qDebug()<<update;
+        query.prepare(update);
+        query.exec();
+        //qDebug()<<"Eroare sql"<<query.lastError();
+
     }
 }
 
@@ -502,13 +541,13 @@ void MainWindow::iterateParticipants()
         participanti[++i].setFirstName(firstName);
         participanti[i].setLastName(lastName);
         participanti[i].setChampionshipId(championshipId);
+        //int cid = participanti[i].getChampionshipId();
+       // champ = getChampionshipById(cid);
 
-        qDebug()<<"First Name: "  <<participanti[i].getFirstName();
-        qDebug()<<"Last Name: "  <<participanti[i].getLastName();
-        int cid = participanti[i].getChampionshipId();
-        qDebug()<<"Cahmpionship id: "  <<cid;
-        champ = getChampionshipById(cid);
-        qDebug()<< "Nume Campionat: "  <<champ.getName();
+//        qDebug()<<"First Name: "  <<participanti[i].getFirstName();
+//        qDebug()<<"Last Name: "  <<participanti[i].getLastName();
+//        qDebug()<<"Cahmpionship id: "  <<cid;
+//        qDebug()<< "Nume Campionat: "  <<champ.getName();
     }
 
 }
@@ -577,17 +616,13 @@ void MainWindow::selectQuery()
 
 void MainWindow::onNextRound()
 {
-
-   // m_personsModel->select();
-   // m_championshipModel->select();
-       // ui->stackedWidget->setCurrentIndex(0);
-        //ui->tableSim->selectionModel()->clearSelection();
-   // m_participantJoinChampModel = new QSqlQueryModel(this);
         QSqlQuery query("SELECT Participanti.first_name, Participanti.last_name, championship.qualification_score, championship.quater_finals_score, championship.semifinals_score, championship.finale_score FROM Participanti INNER JOIN championship ON Participanti.championship_id=championship.championship_id");
         m_participantJoinChampModel->setQuery(query);
          qDebug() <<query.lastError();
          QTableView *view = new QTableView;
          view->setModel(m_participantJoinChampModel);
+         view->setFixedWidth(620);
+         view->setFixedHeight(600);
          view->show();
 }
 

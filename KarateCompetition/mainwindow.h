@@ -62,6 +62,7 @@ private:
     void selectQuery();
     void readSettings(QString &hostName, QString &databaseName, QString &userName, QString &password);
     Championship& getChampionshipById(int id);
+    void simulateFights();
 
 private:
     Ui::MainWindow *ui;
