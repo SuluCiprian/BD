@@ -485,33 +485,38 @@ void MainWindow::insertQuery(const QString &name, const QString &location, const
 void MainWindow::simulateFights()
 {
     srand (time(NULL));
-    int r, champId,a=30,b=4;
+    int r, winnerId,a=30,b=4,loserId;
     Championship champ;
-    QString update;
+    QString update1, update2;
     for(int i= 1; i<=8;i+=2)
     {
         r =rand() % 2;
         if(r)
         {
             qDebug() << participanti[i].getFirstName() << " a castigat";
-            champId = participanti[i].getChampionshipId();
+            winnerId = participanti[i].getChampionshipId();
+            loserId = participanti[i+1].getChampionshipId();
             //getChampionshipById(champId);
-            qDebug() <<getChampionshipById(champId).getName();
-            getChampionshipById(champId).setQualificationScore(10);
+            qDebug() <<getChampionshipById(winnerId).getName();
 
         }
         else
         {
             qDebug() << participanti[i+1].getFirstName() << " a castigat";
-            champId = participanti[i+1].getChampionshipId();
-            champ = getChampionshipById(champId);
-            qDebug() <<champ.getName();
+            winnerId = participanti[i+1].getChampionshipId();
+           // getChampionshipById(winnerId);
+            loserId = participanti[i].getChampionshipId();
         }
         QSqlQuery query(m_db);
-        update =QString("UPDATE championship SET qualification_score = '%1' WHERE championship_id = %2 ;").arg(10).arg(champId);
-       // qDebug()<<update;
-        query.prepare(update);
+        update1 =QString("UPDATE championship SET qualification_score = '%1' WHERE championship_id = %2 ;").arg(10).arg(winnerId);
+        update1 =QString("UPDATE championship SET qualification_score = '%1' WHERE championship_id = %2 ;").arg(1).arg(loserId);
+        qDebug()<<update1;
+        query.prepare(update1);
         query.exec();
+        QSqlQuery query1(m_db);
+        query1.prepare(update2);
+        query1.exec();
+        qDebug()<<update2;
         //qDebug()<<"Eroare sql"<<query.lastError();
 
     }
