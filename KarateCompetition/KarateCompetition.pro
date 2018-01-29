@@ -31,7 +31,9 @@ SOURCES += \
     addagecategory.cpp \
     addweightcategory.cpp \
     addparticipant.cpp \
-    addexperiencecategory.cpp
+    addexperiencecategory.cpp \
+    participant.cpp \
+    championship.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -40,7 +42,9 @@ HEADERS += \
     addagecategory.h \
     addweightcategory.h \
     addparticipant.h \
-    addexperiencecategory.h
+    addexperiencecategory.h \
+    participant.h \
+    championship.h
 
 FORMS += \
         mainwindow.ui \

@@ -7,6 +7,7 @@
 #include "addweightcategory.h"
 #include "addexperiencecategory.h"
 
+
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QSqlField>
@@ -66,6 +67,8 @@ MainWindow::MainWindow(QWidget *parent) :
     else
     {
         ui->statusBar->showMessage(tr("Database connected!"));
+        iterateChampionship();
+        iterateParticipants();
     }
     setupModel();
     ui->tablePersons->setModel(m_personsModel);
@@ -475,6 +478,62 @@ void MainWindow::insertQuery(const QString &name, const QString &location, const
     }
 }
 
+Championship& MainWindow::getChampionshipById(int id)
+{
+    for (int i=1; i<= 100; i++)
+    if(championship[i].getId() == id)
+        return championship[i];
+}
+
+void MainWindow::iterateParticipants()
+{
+    QSqlQuery query(m_db);
+    query.prepare("SELECT * FROM Participanti");
+    query.exec();
+    int i=0;
+    while(query.next()) {
+
+
+        Championship champ;
+        //int id = query.value("participant_id").toInt();
+        QString firstName = query.value("first_name").toString();
+        QString lastName = query.value("last_name").toString();
+        int championshipId = query.value("championship_id").toInt();
+        participanti[++i].setFirstName(firstName);
+        participanti[i].setLastName(lastName);
+        participanti[i].setChampionshipId(championshipId);
+
+        qDebug()<<"First Name: "  <<participanti[i].getFirstName();
+        qDebug()<<"Last Name: "  <<participanti[i].getLastName();
+        int cid = participanti[i].getChampionshipId();
+        qDebug()<<"Cahmpionship id: "  <<cid;
+        champ = getChampionshipById(cid);
+        qDebug()<< "Nume Campionat: "  <<champ.getName();
+    }
+
+}
+
+void MainWindow::iterateChampionship()
+{
+    QSqlQuery query(m_db);
+    query.prepare("SELECT * FROM championship");
+    query.exec();
+    int i=0;
+    while(query.next()) {
+
+        int id = query.value("championship_id").toInt();
+        QString name = query.value("name").toString();
+        QString location = query.value("location").toString();
+        championship[++i].setId(id);
+        //qDebug()<<"Cahmpionship id: "  <<id;
+        championship[i].setName(name);
+        championship[i].setLocation(location);
+
+
+    }
+
+}
+
 int MainWindow::calculateWeightId(int weight){
     QSqlQuery query(m_db);
     query.prepare("SELECT * FROM weight");
@@ -549,8 +608,9 @@ void MainWindow::onTableActionsTriggered(QAction *action)
     if(action == ui->actionChampionship)
     {
         //ui->stackedWidget->setCurrentWidget(ui->tableWorkingHours);
-        ui->stackedWidget->setCurrentIndex(6);
+        ui->stackedWidget->setCurrentIndex(7);
         ui->tableChampionship->selectionModel()->clearSelection();
+
     }
     if(action == ui->actionAge)
     {

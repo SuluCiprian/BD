@@ -8,6 +8,8 @@
 #include <QSqlQueryModel>
 #include <QSqlDatabase>
 #include<iostream>
+#include "participant.h"
+#include "championship.h"
 using namespace std;
 
 namespace Ui {
@@ -39,6 +41,8 @@ private slots:
     void onRefreshDB();
     void onNextRound();
     int calculateWeightId(int weight);
+    void iterateParticipants();
+    void iterateChampionship();
     int calculateAgeId(int age);
     void onTableActionsTriggered(QAction *action);
 
@@ -57,9 +61,11 @@ private:
                                   const QString &semifinals_score, const QString &finale_score);
     void selectQuery();
     void readSettings(QString &hostName, QString &databaseName, QString &userName, QString &password);
+    Championship& getChampionshipById(int id);
 
 private:
     Ui::MainWindow *ui;
+
     QActionGroup *m_tableActions;
     AddParticipant *m_AddParticipant;
     AddOrganization *m_addOrganization;
@@ -76,6 +82,8 @@ private:
     QSqlRelationalTableModel *m_simModel;
     QSqlQueryModel *m_participantJoinChampModel;
     QSqlDatabase m_db;
+    Championship championship[100];
+     Participant participanti[100];
 
 };
 
