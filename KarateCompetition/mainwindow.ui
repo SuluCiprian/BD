@@ -245,7 +245,7 @@
   </action>
   <action name="actionNext_Round">
    <property name="text">
-    <string>Next Round</string>
+    <string>Show</string>
    </property>
   </action>
  </widget>

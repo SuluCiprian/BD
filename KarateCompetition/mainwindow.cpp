@@ -50,9 +50,15 @@ MainWindow::MainWindow(QWidget *parent) :
     m_addExperienceCategory = new AddExperienceCategory(this);
 
     QString hostName = "baasu.db.elephantsql.com";
-    QString databaseName = "xuiqwkse";
-    QString userName = "xuiqwkse";
-    QString password = "Ikc7qWDsaBB3S_4n78YUJsfKWBu99VFn";
+    QString databaseName = "wakisiwz";
+    QString userName = "wakisiwz";
+    QString password = "jfQFEk934qEUUF5K7SIAs7oLOhze4N_u";
+
+//    QString hostName = "baasu.db.elephantsql.com";
+//    QString databaseName = "xuiqwkse";
+//    QString userName = "xuiqwkse";
+//    QString password = "Ikc7qWDsaBB3S_4n78YUJsfKWBu99VFn";
+
     readSettings(hostName, databaseName, userName, password);
     m_db = QSqlDatabase::addDatabase("QPSQL");
     m_db.setHostName(hostName);
@@ -71,6 +77,7 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->statusBar->showMessage(tr("Database connected!"));
         iterateChampionship();
         iterateParticipants();
+        clearScore();
         simulateFights();
     }
     setupModel();
@@ -482,44 +489,169 @@ void MainWindow::insertQuery(const QString &name, const QString &location, const
     }
 }
 
-void MainWindow::simulateFights()
+//void MainWindow::addParticipant(Participant participanti[],QString fn, QString ln, int id, int j)
+//{
+//    participanti[++j].setFirstName(participanti[i].getFirstName());
+//    participanti[j].setLastName(participanti[i].getLastName());
+//    participanti[j].setChampionshipId(participanti[i].getChampionshipId());
+//}
+
+void MainWindow::fight(Participant participanti[],int players, int score, int stage)
 {
     srand (time(NULL));
-    int r, winnerId,a=30,b=4,loserId;
-    Championship champ;
+    int r, winnerId,loserId,quaterScore, qualScore, semiScore, finalScore,j=0;
+    //Championship champ;
     QString update1, update2;
-    for(int i= 1; i<=8;i+=2)
+
+    for(int i= 1; i<=players;i+=2)
     {
+        if (stage==1) {
+        r =rand() % 2;
+        //if( score ==0 && stage ==1 || score ==10 && stage ==2 || stage ==3 && score==20 || stage==4 && score==30) {
+        if(r)
+        {
+            qDebug() << participanti[i].getFirstName() << " a castigat";
+            winnerId = participanti[i].getChampionshipId();
+            loserId = participanti[i+1].getChampionshipId();
+            qfParticipanti[++j].setFirstName(participanti[i].getFirstName());
+            qfParticipanti[j].setLastName(participanti[i].getLastName());
+            qfParticipanti[j].setChampionshipId(participanti[i].getChampionshipId());
+        }
+        else
+        {
+            qDebug() << participanti[i+1].getFirstName() << " a castigat";
+            winnerId = participanti[i+1].getChampionshipId();
+            loserId = participanti[i].getChampionshipId();
+            qfParticipanti[++j].setFirstName(participanti[i+1].getFirstName());
+            qfParticipanti[j].setLastName(participanti[i+1].getLastName());
+            qfParticipanti[j].setChampionshipId(participanti[i+1].getChampionshipId());
+        }
+        }
+
+        if (stage==2) {
+        r =rand() % 2;
+        //if( score ==0 && stage ==1 || score ==10 && stage ==2 || stage ==3 && score==20 || stage==4 && score==30) {
+        if(r)
+        {
+            qDebug() << participanti[i].getFirstName() << " a castigat";
+            winnerId = participanti[i].getChampionshipId();
+            loserId = participanti[i+1].getChampionshipId();
+            sfParticipanti[++j].setFirstName(participanti[i].getFirstName());
+            sfParticipanti[j].setLastName(participanti[i].getLastName());
+            sfParticipanti[j].setChampionshipId(participanti[i].getChampionshipId());
+        }
+        else
+        {
+            qDebug() << participanti[i+1].getFirstName() << " a castigat";
+            winnerId = participanti[i+1].getChampionshipId();
+            loserId = participanti[i].getChampionshipId();
+            sfParticipanti[++j].setFirstName(participanti[i+1].getFirstName());
+            sfParticipanti[j].setLastName(participanti[i+1].getLastName());
+            sfParticipanti[j].setChampionshipId(participanti[i+1].getChampionshipId());
+        }
+        }
+
+        if (stage==3) {
         r =rand() % 2;
         if(r)
         {
             qDebug() << participanti[i].getFirstName() << " a castigat";
             winnerId = participanti[i].getChampionshipId();
             loserId = participanti[i+1].getChampionshipId();
-            //getChampionshipById(champId);
-            qDebug() <<getChampionshipById(winnerId).getName();
-
+            fParticipanti[++j].setFirstName(participanti[i].getFirstName());
+            fParticipanti[j].setLastName(participanti[i].getLastName());
+            fParticipanti[j].setChampionshipId(participanti[i].getChampionshipId());
         }
         else
         {
             qDebug() << participanti[i+1].getFirstName() << " a castigat";
             winnerId = participanti[i+1].getChampionshipId();
-           // getChampionshipById(winnerId);
             loserId = participanti[i].getChampionshipId();
+            fParticipanti[++j].setFirstName(participanti[i+1].getFirstName());
+            fParticipanti[j].setLastName(participanti[i+1].getLastName());
+            fParticipanti[j].setChampionshipId(participanti[i+1].getChampionshipId());
         }
+        }
+
+        if (stage==4) {
+        r =rand() % 2;
+        if(r)
+        {
+            qDebug() << participanti[i].getFirstName() << " a castigat";
+            winnerId = participanti[i].getChampionshipId();
+            loserId = participanti[i+1].getChampionshipId();
+        }
+        else
+        {
+            qDebug() << participanti[i+1].getFirstName() << " a castigat";
+            winnerId = participanti[i+1].getChampionshipId();
+            loserId = participanti[1].getChampionshipId();
+        }
+        }
+
+
+        if (stage ==1 ) {
         QSqlQuery query(m_db);
-        update1 =QString("UPDATE championship SET qualification_score = '%1' WHERE championship_id = %2 ;").arg(10).arg(winnerId);
-        update1 =QString("UPDATE championship SET qualification_score = '%1' WHERE championship_id = %2 ;").arg(1).arg(loserId);
-        qDebug()<<update1;
+        update1 =QString("UPDATE championship SET qualification_score = '%1' WHERE championship_id = %2 ;").arg(score).arg(winnerId);
+        update2 =QString("UPDATE championship SET qualification_score = '%1' WHERE championship_id = %2 ;").arg(1).arg(loserId);
         query.prepare(update1);
         query.exec();
-        QSqlQuery query1(m_db);
-        query1.prepare(update2);
-        query1.exec();
-        qDebug()<<update2;
-        //qDebug()<<"Eroare sql"<<query.lastError();
+        query.prepare(update2);
+        query.exec();
+        }
+        if (stage ==2 ) {
+        QSqlQuery query(m_db);
+        update1 =QString("UPDATE championship SET quater_finals_score = '%1' WHERE championship_id = %2 ;").arg(score).arg(winnerId);
+        update2 =QString("UPDATE championship SET quater_finals_score = '%1' WHERE championship_id = %2 ;").arg(11).arg(loserId);
+        query.prepare(update1);
+        query.exec();
+        query.prepare(update2);
+        query.exec();
+        }
+        if (stage ==3 ) {
+        QSqlQuery query(m_db);
+        update1 =QString("UPDATE championship SET semifinals_score = '%1' WHERE championship_id = %2 ;").arg(score).arg(winnerId);
+        update2 =QString("UPDATE championship SET semifinals_score = '%1' WHERE championship_id = %2 ;").arg(21).arg(loserId);
+        query.prepare(update1);
+        query.exec();
+        query.prepare(update2);
+        query.exec();
+        }
+        if (stage ==4  ) {
+        QSqlQuery query(m_db);
+        update1 =QString("UPDATE championship SET finale_score = '%1' WHERE championship_id = %2 ;").arg(score).arg(winnerId);
+        update2 =QString("UPDATE championship SET finale_score = '%1' WHERE championship_id = %2 ;").arg(31).arg(loserId);
+        query.prepare(update1);
+        query.exec();
+        query.prepare(update2);
+        query.exec();
+        }
 
     }
+}
+void MainWindow::clearScore()
+{
+    QString update1;
+    for(int i=1;i<=16;i++) {
+    QSqlQuery query(m_db);
+    update1 =QString("UPDATE championship SET  finale_score = '%1', semifinals_score = '%2', quater_finals_score = '%3',qualification_score = '%4' WHERE championship_id = %5 ;").arg(0).arg(0).arg(0).arg(0).arg(i);
+    query.prepare(update1);
+    query.exec();
+    }
+}
+
+void MainWindow::simulateFights()
+{
+    //clearScore();
+    qDebug()<<"Qualification: ";
+    fight(participanti,16,10,1);
+    qDebug()<<"QuaterFinals: ";
+    fight(qfParticipanti,8,20,2);
+    qDebug()<<"Semifinals: ";
+    fight(sfParticipanti,4,30,3);
+    qDebug()<<"Finals: ";
+    fight(fParticipanti,2,40,4);
+
 }
 
 Championship& MainWindow::getChampionshipById(int id)
@@ -621,9 +753,9 @@ void MainWindow::selectQuery()
 
 void MainWindow::onNextRound()
 {
-        QSqlQuery query("SELECT Participanti.first_name, Participanti.last_name, championship.qualification_score, championship.quater_finals_score, championship.semifinals_score, championship.finale_score FROM Participanti INNER JOIN championship ON Participanti.championship_id=championship.championship_id");
-        m_participantJoinChampModel->setQuery(query);
-         qDebug() <<query.lastError();
+         QSqlQuery query("SELECT Participanti.first_name, Participanti.last_name, championship.qualification_score, championship.quater_finals_score, championship.semifinals_score, championship.finale_score FROM Participanti INNER JOIN championship ON Participanti.championship_id=championship.championship_id");
+         m_participantJoinChampModel->setQuery(query);
+         //simulateFights();
          QTableView *view = new QTableView;
          view->setModel(m_participantJoinChampModel);
          view->setFixedWidth(620);
@@ -672,33 +804,4 @@ void MainWindow::onTableActionsTriggered(QAction *action)
     }
 }
 
-//void MainWindow::onAddHours()
-//{
-//    QItemSelectionModel *selModel = ui->tablePersons->selectionModel();
-//    QModelIndexList selIndexes = selModel->selectedIndexes();
-//    if(selIndexes.count() == 0)
-//    {
-//        return;
-//    }
-//    QModelIndex index = selIndexes[0];
-//    int row = index.row();
-//    QString id = m_personsModel->itemData(index.sibling(row, 0))[Qt::EditRole].toString();
-//    QString firstName = m_personsModel->itemData(index.sibling(row, 1))[Qt::EditRole].toString();
-//    QString lastName = m_personsModel->itemData(index.sibling(row, 2))[Qt::EditRole].toString();
-//    QString age = m_personsModel->itemData(index.sibling(row, 3))[Qt::EditRole].toString();
-//    QString weight = m_personsModel->itemData(index.sibling(row, 4))[Qt::EditRole].toString();
-//    QString experience = m_personsModel->itemData(index.sibling(row, 5))[Qt::EditRole].toString();
-//    QString organization_id = m_personsModel->itemData(index.sibling(row, 6))[Qt::EditRole].toString();
-//    QString championship_id = m_personsModel->itemData(index.sibling(row, 7))[Qt::EditRole].toString();
 
-//    m_AddParticipant->setType(AddParticipant::AddType::ADD_HOURS);
-//    m_AddParticipant->setData(firstName, lastName, id, age, weight, experience,organization_id,championship_id);
-//    int r = m_AddParticipant->exec();
-//    if(r == QDialog::Rejected)
-//    {
-//        return;
-//    }
-////    QString hours;
-////   m_AddParticipant->hours(hours);
-////    insertQuery(id, hours);
-//}

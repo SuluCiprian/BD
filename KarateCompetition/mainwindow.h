@@ -63,6 +63,9 @@ private:
     void readSettings(QString &hostName, QString &databaseName, QString &userName, QString &password);
     Championship& getChampionshipById(int id);
     void simulateFights();
+    void fight(Participant participanti[],int players, int score, int stage);
+    void addParticipant(Participant participanti[],Participant participanti1[], QString fn, QString ln, int id, int j, int i);
+    void clearScore();
 
 private:
     Ui::MainWindow *ui;
@@ -85,6 +88,9 @@ private:
     QSqlDatabase m_db;
     Championship championship[100];
      Participant participanti[100];
+     Participant qfParticipanti[100];
+     Participant sfParticipanti[100];
+     Participant fParticipanti[100];
 
 };
 
