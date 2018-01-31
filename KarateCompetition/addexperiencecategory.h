@@ -26,12 +26,9 @@ public:
     void setData(const QString &exp, const QString &experience_id);
     void data( QString &exp,  QString &experience_id);
     void setType(AddType type);
-    //void setHours(const QString &hours);
-   // void hours(QString &hours);
 
 protected:
     void accept() override;
-    void showEvent(QShowEvent *);
 
 private:
     Ui::AddExperienceCategory *ui;

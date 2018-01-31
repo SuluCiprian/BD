@@ -26,8 +26,6 @@ public:
     void setData(const QString &name, const QString &info, const QString &organization_id);
     void data(QString &name, QString &info, QString &organization_id);
     void setType(AddType type);
-    //void setHours(const QString &hours);
-   // void hours(QString &hours);
 
 protected:
     void accept() override;

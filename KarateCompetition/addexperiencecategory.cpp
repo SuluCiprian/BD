@@ -44,15 +44,6 @@ void AddExperienceCategory::accept()
     }
 }
 
-void AddExperienceCategory::showEvent(QShowEvent *)
-{
-    if(m_type == AddType::ADD_PERSON)
-    {
-        setData("", "");
-        ui->experience_id->setEnabled(true);
-        ui->exp->setEnabled(true);
-    }
-}
 void AddExperienceCategory::setType(AddType type)
 {
     m_type = type;

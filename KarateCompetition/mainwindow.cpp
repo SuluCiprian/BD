@@ -7,7 +7,6 @@
 #include "addweightcategory.h"
 #include "addexperiencecategory.h"
 
-
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QSqlField>
@@ -54,11 +53,6 @@ MainWindow::MainWindow(QWidget *parent) :
     QString userName = "wakisiwz";
     QString password = "jfQFEk934qEUUF5K7SIAs7oLOhze4N_u";
 
-//    QString hostName = "baasu.db.elephantsql.com";
-//    QString databaseName = "xuiqwkse";
-//    QString userName = "xuiqwkse";
-//    QString password = "Ikc7qWDsaBB3S_4n78YUJsfKWBu99VFn";
-
     readSettings(hostName, databaseName, userName, password);
     m_db = QSqlDatabase::addDatabase("QPSQL");
     m_db.setHostName(hostName);
@@ -88,8 +82,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tableAge->setModel(m_ageModel);
     ui->tableWeight->setModel(m_weightModel);
     ui->tableExperience->setModel(m_experienceModel);
-   // ui->tableWorkingHours->setModel(m_workingHoursModel);
-    //ui->tableWorkingHoursJoinPersons->setModel(m_workingHoursJoinPersonsModel);
     connect(ui->actionRefresh, &QAction::triggered, this, &MainWindow::onRefreshDB);
     connect(ui->actionNext_Round, &QAction::triggered, this, &MainWindow::onNextRound);
 }
@@ -282,13 +274,6 @@ void MainWindow::setupModel()
     m_championshipModel->setHeaderData(6, Qt::Horizontal, tr("Final Score"));
     m_championshipModel->select();
 
-//    m_workingHoursModel = new QSqlRelationalTableModel(this, m_db);
-//    m_workingHoursModel->setTable("WorkingHours");
-//    m_workingHoursModel->setRelation(0, QSqlRelation("Persons", "id", "lastname"));
-//    m_workingHoursModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
-//    m_workingHoursModel->setHeaderData(0, Qt::Horizontal, tr("Person"));
-//    m_workingHoursModel->setHeaderData(1, Qt::Horizontal, tr("Hours"));
-//    m_workingHoursModel->select();
 
     m_participantJoinChampModel = new QSqlQueryModel(this);
     QSqlQuery query("SELECT Participanti.first_name, Participanti.last_name, championship.qualification_score, championship.quater_finals_score, championship.semifinals_score, championship.finale_score FROM Participanti INNER JOIN championship ON Participanti.championship_id=championship.championship_id");
@@ -489,17 +474,11 @@ void MainWindow::insertQuery(const QString &name, const QString &location, const
     }
 }
 
-//void MainWindow::addParticipant(Participant participanti[],QString fn, QString ln, int id, int j)
-//{
-//    participanti[++j].setFirstName(participanti[i].getFirstName());
-//    participanti[j].setLastName(participanti[i].getLastName());
-//    participanti[j].setChampionshipId(participanti[i].getChampionshipId());
-//}
 
 void MainWindow::fight(Participant participanti[],int players, int score, int stage)
 {
     srand (time(NULL));
-    int r, winnerId,loserId,quaterScore, qualScore, semiScore, finalScore,j=0;
+    int r, winnerId,loserId,j=0;
     //Championship champ;
     QString update1, update2;
 
@@ -507,7 +486,6 @@ void MainWindow::fight(Participant participanti[],int players, int score, int st
     {
         if (stage==1) {
         r =rand() % 2;
-        //if( score ==0 && stage ==1 || score ==10 && stage ==2 || stage ==3 && score==20 || stage==4 && score==30) {
         if(r)
         {
             qDebug() << participanti[i].getFirstName() << " a castigat";
@@ -530,7 +508,6 @@ void MainWindow::fight(Participant participanti[],int players, int score, int st
 
         if (stage==2) {
         r =rand() % 2;
-        //if( score ==0 && stage ==1 || score ==10 && stage ==2 || stage ==3 && score==20 || stage==4 && score==30) {
         if(r)
         {
             qDebug() << participanti[i].getFirstName() << " a castigat";
@@ -746,14 +723,12 @@ int MainWindow::calculateAgeId(int age){
 void MainWindow::selectQuery()
 {
     m_personsModel->select();
-   // m_workingHoursModel->select();
 
-    //m_workingHoursJoinPersonsModel->setQuery(query);
 }
 
 void MainWindow::onNextRound()
 {
-         QSqlQuery query("SELECT Participanti.first_name, Participanti.last_name, championship.qualification_score, championship.quater_finals_score, championship.semifinals_score, championship.finale_score FROM Participanti INNER JOIN championship ON Participanti.championship_id=championship.championship_id");
+         QSqlQuery query("SELECT Participanti.first_name, Participanti.last_name, championship.qualification_score, championship.quater_finals_score, championship.semifinals_score, championship.finale_score FROM Participanti INNER JOIN championship ON Participanti.championship_id=championship.championship_id ORDER BY championship.finale_score DESC, championship.semifinals_score DESC, championship.quater_finals_score DESC, championship.qualification_score DESC");
          m_participantJoinChampModel->setQuery(query);
          //simulateFights();
          QTableView *view = new QTableView;
@@ -767,38 +742,32 @@ void MainWindow::onTableActionsTriggered(QAction *action)
 {
     if(action == ui->actionTables)
     {
-        //ui->stackedWidget->setCurrentWidget(ui->tablePersons);
         ui->stackedWidget->setCurrentIndex(0);
     }
     if(action == ui->actionOrganizations)
     {
-        //ui->stackedWidget->setCurrentWidget(ui->tableWorkingHours);
         ui->stackedWidget->setCurrentIndex(1);
         ui->tableOrganization->selectionModel()->clearSelection();
     }
 
     if(action == ui->actionChampionship)
     {
-        //ui->stackedWidget->setCurrentWidget(ui->tableWorkingHours);
         ui->stackedWidget->setCurrentIndex(7);
         ui->tableChampionship->selectionModel()->clearSelection();
 
     }
     if(action == ui->actionAge)
     {
-        //ui->stackedWidget->setCurrentWidget(ui->tableWorkingHours);
         ui->stackedWidget->setCurrentIndex(2);
         ui->tableAge->selectionModel()->clearSelection();
     }
     if(action == ui->actionWeight)
     {
-        //ui->stackedWidget->setCurrentWidget(ui->tableWorkingHours);
         ui->stackedWidget->setCurrentIndex(3);
         ui->tableAge->selectionModel()->clearSelection();
     }
     if(action == ui->actionExperience)
     {
-        //ui->stackedWidget->setCurrentWidget(ui->tableWorkingHours);
         ui->stackedWidget->setCurrentIndex(4);
         ui->tableExperience->selectionModel()->clearSelection();
     }

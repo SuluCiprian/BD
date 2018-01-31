@@ -26,8 +26,6 @@ public:
     void setData(const QString &min_bound, const QString &max_bound, const QString &weight_id);
     void data( QString &min_bound,  QString &max_bound,  QString &weight_id);
     void setType(AddType type);
-    //void setHours(const QString &hours);
-   // void hours(QString &hours);
 
 protected:
     void accept() override;

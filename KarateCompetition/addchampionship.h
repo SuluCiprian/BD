@@ -28,8 +28,7 @@ public:
     void data( QString &name,  QString &location,  QString &championship_id,
                QString &qualification_score,  QString &quater_finals_score,  QString &semifinals_score,  QString &finale_score);
     void setType(AddType type);
-    //void setHours(const QString &hours);
-   // void hours(QString &hours);
+
 
 protected:
     void accept() override;
