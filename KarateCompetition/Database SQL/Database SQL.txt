@@ -1,0 +1,67 @@
+CREATE TABLE age ( 
+	age_id               integer  NOT NULL,
+	min_bound            integer  NOT NULL,
+	max_bound            integer  NOT NULL,
+	CONSTRAINT pk_age_age_id PRIMARY KEY ( age_id )
+ );
+
+CREATE TABLE championship ( 
+	championship_id      integer  NOT NULL,
+	name                 varchar(100)  NOT NULL,
+	location           varchar(30)  ,
+	qualification_score  integer  ,
+	quater_finals_score  integer  ,
+	semifinals_score     integer  ,
+	finale_score         integer  ,
+	CONSTRAINT pk_stage_stage_id PRIMARY KEY ( championship_id )
+ );
+
+CREATE TABLE experience ( 
+	experience_id        integer  NOT NULL,
+	exp                  varchar(30)  ,
+	CONSTRAINT pk_experience_experience_id PRIMARY KEY ( experience_id )
+ );
+
+CREATE TABLE organization ( 
+	organization_id      integer  NOT NULL,
+	name                 varchar(100)  NOT NULL,
+	info                 varchar(100)  ,
+	CONSTRAINT pk_organization_organization_id PRIMARY KEY ( organization_id )
+ );
+
+CREATE TABLE weight ( 
+	weight_id            integer  NOT NULL,
+	min_bound            integer  ,
+	max_bound            integer  ,
+	CONSTRAINT pk_weight_weight_id PRIMARY KEY ( weight_id )
+ );
+
+CREATE TABLE Participanti ( 
+	participant_id       integer  NOT NULL,
+	first_name           varchar(50)  NOT NULL,
+	last_name            varchar(50)  NOT NULL,
+	age                  integer  ,
+	weight               integer  ,
+	experience           varchar(30)  ,
+	age_id               integer  ,
+	championship_id      integer  ,
+	organization_id      integer  ,
+	weight_id            integer  ,
+	experience_id        integer  ,
+	CONSTRAINT "Participanti_pkey" PRIMARY KEY ( participant_id ),
+	CONSTRAINT fk_participanti_age FOREIGN KEY ( age_id ) REFERENCES age( age_id )  ,
+	CONSTRAINT fk_participanti_championship FOREIGN KEY ( championship_id ) REFERENCES championship( championship_id )  ,
+	CONSTRAINT fk_participanti_organization FOREIGN KEY ( organization_id ) REFERENCES organization( organization_id )  ,
+	CONSTRAINT fk_participanti_weight FOREIGN KEY ( weight_id ) REFERENCES weight( weight_id )  ,
+	CONSTRAINT fk_participanti_experience FOREIGN KEY ( experience_id ) REFERENCES experience( experience_id )  
+ );
+
+CREATE INDEX idx_participanti_age_id ON Participanti ( age_id );
+
+CREATE INDEX idx_participanti_championship_id ON Participanti ( championship_id );
+
+CREATE INDEX idx_participanti_organization_id ON Participanti ( organization_id );
+
+CREATE INDEX idx_participanti_weight_id ON Participanti ( weight_id );
+
+CREATE INDEX idx_participanti_experience_id ON Participanti ( experience_id );
